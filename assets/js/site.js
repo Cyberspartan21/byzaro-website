@@ -115,6 +115,19 @@
     ddMenu.classList.remove('is-open');
   }
   if (ddToggle && ddMenu) {
+    /* Klassisches Hover-Dropdown auf Geraeten mit Maus; Klick/Tastatur bleiben. */
+    var ddItem = ddToggle.closest('.nav-item--dropdown') || ddToggle.parentElement;
+    var ddCloseTimer = null;
+    if (ddItem && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+      ddItem.addEventListener('pointerenter', function () {
+        clearTimeout(ddCloseTimer);
+        openDropdown();
+      });
+      ddItem.addEventListener('pointerleave', function () {
+        clearTimeout(ddCloseTimer);
+        ddCloseTimer = setTimeout(closeDropdown, 180);
+      });
+    }
     ddToggle.addEventListener('click', function (e) {
       e.stopPropagation();
       var expanded = ddToggle.getAttribute('aria-expanded') === 'true';

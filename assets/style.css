@@ -1322,6 +1322,17 @@ html:not([data-theme="light"]) .btn-primary:focus-visible {
 
 .dropdown-menu.is-open { opacity: 1; visibility: visible; transform: translateY(0); }
 
+/* Unsichtbarer Steg über der 14px-Lücke, damit das Menü beim
+   Diagonal-Bewegen der Maus vom Trigger ins Menü nicht zuklappt. */
+.dropdown-menu::before {
+  content: "";
+  position: absolute;
+  top: -14px;
+  left: 0;
+  right: 0;
+  height: 14px;
+}
+
 .dropdown-menu a {
   padding: 10px 20px;
   font-size: 11px;
