@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BYZARO GROUP</title>
+<meta name="robots" content="noindex, nofollow">
+<meta http-equiv="refresh" content="0; url=de/index.html">
+<script>
+(function () {
+  try {
+    var map = { 'de': 'de/index.html', 'en': 'en/index.html', 'sr': 'sr/index.html', 'hr': 'hr/index.html' };
+    var langs = navigator.languages || [navigator.language || ''];
+    for (var i = 0; i < langs.length; i++) {
+      var code = (langs[i] || '').slice(0, 2).toLowerCase();
+      if (map[code]) {
+        window.location.replace(map[code]);
+        return;
+      }
+    }
+    window.location.replace('de/index.html');
+  } catch (e) {
+    window.location.replace('de/index.html');
+  }
+})();
+</script>
+<style>
+  html,body { margin:0; min-height:100%; background:#F0EBE1; color:#2B2522; font-family: system-ui, sans-serif; }
+  .wrap { min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:24px; text-align:center; padding:40px 20px; }
+  a { color:#5C1A28; text-decoration:none; font-weight:600; letter-spacing:.06em; }
+  .links { display:flex; gap:18px; font-size:14px; text-transform:uppercase; }
+</style>
+</head>
+<body>
+  <noscript><meta http-equiv="refresh" content="0; url=de/index.html"></noscript>
+  <div class="wrap">
+    <p>BYZARO GROUP</p>
+    <div class="links">
+      <a href="de/index.html">DE</a>
+      <a href="en/index.html">EN</a>
+      <a href="sr/index.html">СР</a>
+      <a href="hr/index.html">HR</a>
+    </div>
+  </div>
+</body>
+</html>
