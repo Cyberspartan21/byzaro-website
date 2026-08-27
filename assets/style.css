@@ -1105,6 +1105,269 @@ html:not([data-theme="light"]) .btn-primary:focus-visible {
 .division-sep { margin: 0; }
 
 /* ---------------------------------------------------------------------- */
+/* Photography — tinted image bands (shared recipe for thumbnails/bands)    */
+/* ---------------------------------------------------------------------- */
+
+.img-tint { position: relative; overflow: hidden; }
+
+.img-tint > img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(.9);
+  display: block;
+}
+
+.img-tint::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--wine) 18%, transparent), color-mix(in srgb, var(--bg) 55%, transparent));
+  pointer-events: none;
+}
+
+/* Full-bleed decorative image band (home / network) — no text on top. */
+.img-band {
+  position: relative;
+  overflow: hidden;
+  min-height: clamp(220px, 40vh, 420px);
+}
+
+/* Small thumbnail used inside the capabilities ledger rows. */
+.ledger-thumb {
+  width: 64px;
+  height: 46px;
+  flex-shrink: 0;
+  display: none;
+}
+
+@media (min-width: 560px) { .ledger-thumb { display: block; } }
+
+/* Thumbnail used inside "related division" cards. */
+.related-thumb { display: block; height: 150px; }
+
+/* ---------------------------------------------------------------------- */
+/* Division hero band — full-width division photograph                     */
+/* ---------------------------------------------------------------------- */
+
+.division-hero {
+  position: relative;
+  min-height: clamp(380px, 56vh, 640px);
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+}
+
+.division-hero img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(.9);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .division-hero img { animation: bz-kenburns 18s ease-in-out infinite alternate; }
+}
+
+@keyframes bz-kenburns {
+  from { transform: scale(1); }
+  to { transform: scale(1.06); }
+}
+
+.division-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg,
+    color-mix(in srgb, var(--wine) 28%, transparent) 0%,
+    color-mix(in srgb, var(--wine) 12%, transparent) 34%,
+    color-mix(in srgb, var(--bg) 74%, transparent) 66%,
+    color-mix(in srgb, var(--bg) 96%, transparent) 100%);
+  pointer-events: none;
+}
+
+.division-hero-inner {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  padding-top: clamp(48px, 8vw, 80px);
+  padding-bottom: clamp(32px, 5vw, 56px);
+}
+
+.division-hero .division-eyebrow { justify-content: flex-start; margin-bottom: 14px; }
+.division-hero .division-name { text-align: left; }
+.division-hero .division-line { text-align: left; max-width: 56ch; margin-top: 14px; }
+
+/* ---------------------------------------------------------------------- */
+/* Division services — nummerierte Ledger-Reihen mit Erklärsatz             */
+/* ---------------------------------------------------------------------- */
+
+.service-detail-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+  margin-top: clamp(28px, 4vw, 44px);
+}
+
+@media (min-width: 760px) {
+  .service-detail-list { grid-template-columns: 1fr 1fr; column-gap: 48px; }
+}
+
+.service-detail-list li {
+  display: flex;
+  gap: 18px;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--sand-faint);
+  align-items: baseline;
+}
+
+.service-detail-num {
+  font-family: var(--font-ui);
+  color: var(--muted);
+  font-size: .9rem;
+  letter-spacing: .1em;
+  flex-shrink: 0;
+  width: 2em;
+}
+
+.service-detail-body { display: flex; flex-direction: column; gap: 6px; }
+
+.service-detail-name { font-family: var(--font-ui); font-weight: 500; font-size: 1.02rem; }
+
+.service-detail-note { font-family: var(--font-ui); font-weight: 400; color: var(--muted); font-size: .92rem; line-height: 1.7; }
+
+/* ---------------------------------------------------------------------- */
+/* Division scenarios — three cards                                         */
+/* ---------------------------------------------------------------------- */
+
+.scenario-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(20px, 3vw, 28px);
+}
+
+@media (min-width: 860px) {
+  .scenario-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+.scenario-card {
+  background: var(--bg-2);
+  border: 1px solid var(--frame-border);
+  padding: clamp(24px, 3vw, 32px);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.scenario-card .ledger-rule { margin-bottom: 2px; }
+
+.scenario-card .scenario-label {
+  font-family: var(--font-ui);
+  font-size: 11px;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--accent-text);
+}
+
+.scenario-card h3 {
+  font-family: var(--font-display);
+  font-style: normal;
+  font-weight: 600;
+  font-size: clamp(1.15rem, 2vw, 1.4rem);
+  line-height: 1.3;
+}
+
+.scenario-card p { color: var(--muted); font-size: .94rem; line-height: 1.7; font-family: var(--font-ui); }
+
+/* ---------------------------------------------------------------------- */
+/* Division process — 4-step timeline                                       */
+/* ---------------------------------------------------------------------- */
+
+.process-steps {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(28px, 4vw, 40px);
+}
+
+@media (min-width: 860px) {
+  .process-steps { grid-template-columns: repeat(4, 1fr); }
+}
+
+.process-step {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 20px;
+  border-top: 2px solid var(--accent-text);
+}
+
+.process-step .process-num {
+  font-family: var(--font-ui);
+  color: var(--accent-text);
+  font-size: .85rem;
+  letter-spacing: .2em;
+}
+
+.process-step h3 { font-family: var(--font-ui); font-weight: 500; font-size: 1.05rem; }
+
+.process-step p { color: var(--muted); font-size: .92rem; line-height: 1.7; }
+
+/* ---------------------------------------------------------------------- */
+/* Division "Im Verbund" — related division cards                          */
+/* ---------------------------------------------------------------------- */
+
+.related-divisions {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(20px, 3vw, 28px);
+  margin-top: clamp(36px, 5vw, 52px);
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media (min-width: 640px) {
+  .related-divisions { grid-template-columns: 1fr 1fr; }
+}
+
+.related-card {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  border: 1px solid var(--frame-border);
+  background: var(--bg-2);
+}
+
+.related-card-body { padding: 18px 20px 22px; display: flex; flex-direction: column; gap: 6px; }
+
+.related-card-name { font-family: var(--font-display); font-size: 1.2rem; }
+
+.related-card-line { color: var(--muted); font-size: .88rem; line-height: 1.6; font-family: var(--font-ui); }
+
+/* ---------------------------------------------------------------------- */
+/* Division compliance / partner-coordination block                        */
+/* ---------------------------------------------------------------------- */
+
+.division-compliance-block {
+  max-width: 760px;
+  margin: clamp(40px, 6vw, 64px) auto 0;
+  padding: clamp(24px, 3vw, 32px);
+  border: 1px solid var(--frame-border);
+  background: var(--bg-2);
+}
+
+.division-compliance-block p {
+  font-family: var(--font-ui);
+  color: var(--muted);
+  font-size: .92rem;
+  line-height: 1.7;
+}
+
+/* ---------------------------------------------------------------------- */
 /* Mandate form (network.html)                                              */
 /* ---------------------------------------------------------------------- */
 
