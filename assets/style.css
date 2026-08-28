@@ -61,8 +61,8 @@
   /* Bronze variant of the same motif for use on theme-following (flat) light
      grounds — dark enough to read on cream. */
   --metal-bronze-a: color-mix(in srgb, var(--wine) 87%, black 13%);
-  --metal-bronze-b: color-mix(in srgb, var(--wine) 60%, var(--sand) 40%);
-  --metal-bronze-c: color-mix(in srgb, var(--wine) 65%, var(--sand) 35%);
+  --metal-bronze-b: color-mix(in srgb, var(--wine) 80%, var(--sand) 20%);
+  --metal-bronze-c: color-mix(in srgb, var(--wine) 84%, var(--sand) 16%);
   --metal-bronze-d: color-mix(in srgb, var(--wine) 83%, black 17%);
 
   /* Gold-shimmer for hairline rules (ledger-rule) — derived from accent-text. */
@@ -662,8 +662,12 @@ html:not([data-theme="light"]) .btn-primary:focus-visible::before { transform: t
   background-color: var(--near-black);
 }
 
-/* Full-bleed cinematic photo hero (home) — same in both themes, the photo
-   and its scrim are theme-independent (a photo can't "go light"). */
+[data-theme="light"] .hero { background-color: var(--cream); }
+
+/* Full-bleed cinematic photo hero (home) — the photo itself is
+   theme-independent, but its scrim now DOES follow the theme: a cream veil
+   in light mode (hell & luftig, Bordeaux nur als Akzent), a more neutral
+   dark veil in dark mode (weniger Rot-Sättigung als frühere Fassung). */
 .hero-bg-photo {
   position: absolute;
   inset: 0;
@@ -684,12 +688,29 @@ html:not([data-theme="light"]) .btn-primary:focus-visible::before { transform: t
   inset: 0;
   z-index: 1;
   pointer-events: none;
+  /* Dark theme: more neutral-dark than before, wine kept as an accent only
+     (soft radial at the foot) instead of a flat wine wash over the photo. */
   background-image:
-    radial-gradient(70% 55% at 50% 16%, color-mix(in srgb, var(--sand) 18%, transparent), transparent 70%),
+    radial-gradient(70% 55% at 50% 16%, color-mix(in srgb, var(--sand) 14%, transparent), transparent 70%),
     linear-gradient(180deg,
-      color-mix(in srgb, var(--wine-deep) 62%, transparent) 0%,
-      color-mix(in srgb, var(--wine-deep) 10%, transparent) 40%,
-      color-mix(in srgb, var(--near-black) 80%, transparent) 100%);
+      color-mix(in srgb, var(--near-black) 76%, transparent) 0%,
+      color-mix(in srgb, var(--near-black) 54%, transparent) 42%,
+      color-mix(in srgb, var(--near-black) 88%, transparent) 100%),
+    radial-gradient(55% 42% at 50% 100%, color-mix(in srgb, var(--wine) 26%, transparent), transparent 78%);
+}
+
+/* Light theme: zarter Creme-Schleier statt Weinschleier — oben etwas
+   stärker (Header-Lesbarkeit), Mitte transparenter (Foto atmet), unten
+   wieder etwas stärker als Textbett; Bordeaux nur als sehr dezenter
+   Farbstich am Hero-Fuss. */
+[data-theme="light"] .hero::before {
+  background-image:
+    linear-gradient(180deg,
+      color-mix(in srgb, var(--cream) 40%, transparent) 0%,
+      color-mix(in srgb, var(--cream) 6%, transparent) 34%,
+      color-mix(in srgb, var(--cream) 6%, transparent) 62%,
+      color-mix(in srgb, var(--cream) 44%, transparent) 100%),
+    linear-gradient(0deg, color-mix(in srgb, var(--wine) 16%, transparent) 0%, transparent 18%);
 }
 
 .hero-mark-bg {
@@ -715,6 +736,33 @@ html:not([data-theme="light"]) .btn-primary:focus-visible::before { transform: t
   gap: clamp(20px, 3vw, 28px);
 }
 
+/* Local text-bed: a soft radial scrim sized to the text column itself, on
+   top of the whole-hero veil above. Guarantees contrast for label/headline/
+   support/CTA regardless of where a bright window or dark surface in the
+   underlying photo happens to land — "gezielt im Textbereich verstärken"
+   instead of darkening/lightening the whole hero. */
+/* Weicher, elliptischer Lichtkegel statt rechteckigem Milchblock: traegt den
+   Text auch ueber dunklen Bildpartien (Silhouetten), laesst das Foto aber
+   ringsum sichtbar. Radial statt blur() — kein sichtbarer Kasten. */
+.hero-inner::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: -22% -24%;
+  pointer-events: none;
+  background-image: radial-gradient(66% 60% at 50% 50%,
+    color-mix(in srgb, var(--near-black) 80%, transparent) 0%,
+    color-mix(in srgb, var(--near-black) 62%, transparent) 60%,
+    transparent 84%);
+}
+
+[data-theme="light"] .hero-inner::before {
+  background-image: radial-gradient(66% 60% at 50% 50%,
+    color-mix(in srgb, var(--cream) 76%, transparent) 0%,
+    color-mix(in srgb, var(--cream) 56%, transparent) 60%,
+    transparent 84%);
+}
+
 .hero-label {
   font-family: var(--font-ui);
   font-size: 11px;
@@ -725,6 +773,11 @@ html:not([data-theme="light"]) .btn-primary:focus-visible::before { transform: t
   text-shadow: 0 2px 16px color-mix(in srgb, var(--near-black) 75%, transparent);
 }
 
+[data-theme="light"] .hero-label {
+  color: var(--wine);
+  text-shadow: 0 2px 16px color-mix(in srgb, var(--cream) 70%, transparent);
+}
+
 .hero-headline {
   font-size: clamp(2.5rem, 6.6vw, 5.8rem);
   line-height: 1.22;
@@ -732,6 +785,11 @@ html:not([data-theme="light"]) .btn-primary:focus-visible::before { transform: t
   color: var(--cream);
   text-shadow: 0 4px 28px color-mix(in srgb, var(--near-black) 80%, transparent);
   text-wrap: balance;
+}
+
+[data-theme="light"] .hero-headline {
+  color: var(--text);
+  text-shadow: 0 3px 22px color-mix(in srgb, var(--cream) 75%, transparent);
 }
 
 /* Narrow phones: large display type + long unbroken German/Serbian/Croatian
@@ -787,6 +845,11 @@ html:not([data-theme="light"]) .btn-primary:focus-visible::before { transform: t
   text-shadow: 0 2px 16px color-mix(in srgb, var(--near-black) 75%, transparent);
 }
 
+[data-theme="light"] .hero-support {
+  color: color-mix(in srgb, var(--text) 84%, transparent);
+  text-shadow: 0 2px 14px color-mix(in srgb, var(--cream) 65%, transparent);
+}
+
 .hero-actions {
   margin-top: 8px;
   display: flex;
@@ -798,9 +861,10 @@ html:not([data-theme="light"]) .btn-primary:focus-visible::before { transform: t
 
 .hero-close-rule { position: relative; z-index: 2; width: 100%; max-width: 640px; margin: 0 auto; }
 
-/* The hero always sits on a dark photo scrim, in BOTH themes — its controls
-   must not follow the page theme's flip (which would put dark wine text on
-   a dark scrim in light mode). Pin them to the cream/sand pairing. */
+/* The hero scrim now follows the page theme (cream veil in light mode, a
+   more neutral dark veil in dark mode — see .hero::before above), so the
+   text controls follow it too: cream/sand on the dark veil, ink/wine on the
+   cream veil. */
 .hero .text-link {
   color: var(--sand);
   border-bottom-color: color-mix(in srgb, var(--sand) 45%, transparent);
@@ -808,6 +872,17 @@ html:not([data-theme="light"]) .btn-primary:focus-visible::before { transform: t
 }
 .hero .text-link:hover, .hero .text-link:focus-visible { border-color: var(--sand); color: var(--cream); }
 
+[data-theme="light"] .hero .text-link {
+  color: var(--wine);
+  border-bottom-color: color-mix(in srgb, var(--wine) 45%, transparent);
+  text-shadow: 0 2px 12px color-mix(in srgb, var(--cream) 60%, transparent);
+}
+[data-theme="light"] .hero .text-link:hover,
+[data-theme="light"] .hero .text-link:focus-visible { border-color: var(--wine); color: color-mix(in srgb, var(--wine) 80%, black 20%); }
+
+/* The primary CTA carries its own solid Bordeaux fill (from .btn-primary)
+   in both themes, so it stays "kräftig Bordeaux" and legible regardless of
+   the photo/scrim underneath — only the thin border/label follow the veil. */
 .hero .btn-primary {
   color: var(--cream);
   border-color: var(--sand);
@@ -1806,6 +1881,42 @@ html:not([data-theme="light"]) .btn-primary:focus-visible::before { transform: t
 .wine-band .container { position: relative; z-index: 1; }
 
 /* ---------------------------------------------------------------------- */
+/* "Die Gruppe" (#group) — takes the wine-band markup (gradient, B-mark
+   watermark, numeral) but not the wine-band colour: after the hero rework
+   this section is the one full-bleed band that stays HELL with Bordeaux
+   only as an accent (lines, numeral, watermark), so the closing CTA band
+   remains the sole "loud" wine statement on the homepage. #group is an ID
+   selector so it reliably wins over the generic .wine-band rules above
+   regardless of source order, without touching the HTML/classes. */
+/* ---------------------------------------------------------------------- */
+
+#group.wine-band {
+  color: #2B2522;
+  background-image:
+    radial-gradient(120% 60% at 14% -8%, color-mix(in srgb, var(--wine) 8%, transparent), transparent 58%),
+    linear-gradient(175deg, var(--cream) 0%, var(--sand) 62%, color-mix(in srgb, var(--sand) 80%, var(--muted) 20%) 100%);
+}
+
+#group.wine-band .label,
+#group.wine-band .section-numeral,
+#group.wine-band .division-eyebrow .label { color: var(--wine); }
+
+#group.wine-band .section-title,
+#group.wine-band h2,
+#group.wine-band h3 { color: #2B2522; }
+
+#group.wine-band .lede,
+#group.wine-band .audience { color: color-mix(in srgb, #2B2522 78%, transparent); }
+
+#group.wine-band .triad,
+#group.wine-band .triad-word { border-color: color-mix(in srgb, var(--wine) 30%, transparent); }
+
+#group.wine-band .text-link { color: var(--wine); border-bottom-color: color-mix(in srgb, var(--wine) 40%, transparent); }
+#group.wine-band .text-link:hover, #group.wine-band .text-link:focus-visible { border-color: var(--wine); color: color-mix(in srgb, var(--wine) 80%, black 20%); }
+
+#group .wine-band-mark { color: var(--wine); opacity: .05; }
+
+/* ---------------------------------------------------------------------- */
 /* Ghost section numerals — huge, faint Playfair numerals behind titles.    */
 /* ---------------------------------------------------------------------- */
 
@@ -1873,6 +1984,22 @@ html:not([data-theme="light"]) .btn-primary:focus-visible::before { transform: t
 
 @supports not (background-clip: text) {
   .metal-text, .metal-text--adaptive { color: var(--sand); background-image: none; }
+}
+
+/* The hero headline sits on a cream veil in light mode now (not always a
+   dark photo scrim), so its .metal-text word switches to the darker
+   bronze/Bordeaux gradient there — the bright champagne gradient would
+   nearly disappear on a light ground. */
+[data-theme="light"] .hero .metal-text {
+  background-image: linear-gradient(100deg,
+    var(--metal-bronze-a) 0%,
+    var(--metal-bronze-b) 45%,
+    var(--metal-bronze-c) 60%,
+    var(--metal-bronze-d) 100%);
+}
+
+@supports not (background-clip: text) {
+  [data-theme="light"] .hero .metal-text { color: var(--wine); background-image: none; }
 }
 
 /* ---------------------------------------------------------------------- */
