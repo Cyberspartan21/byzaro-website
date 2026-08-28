@@ -518,6 +518,12 @@ html:not([data-theme="light"]) .btn-primary:focus-visible::before { transform: t
   transform: scaleX(1);
 }
 
+/* Die Nav-Unterstreichung ist für die Top-Level-Links gedacht (Home,
+   Capabilities, Network) — nicht für die Einträge im Capabilities-Flyout,
+   die ihre eigene Hover-Sprache (Chip + Pfeil) haben. Spezifität bewusst
+   >= der Basisregel (zwei Klassen), damit sie in jedem Zustand gewinnt. */
+.nav-item--dropdown .dropdown-menu a::after { content: none; }
+
 .nav-cta { padding: 11px 20px; font-size: 11px; }
 
 .lang-switch {
@@ -1917,28 +1923,36 @@ html:not([data-theme="light"]) .btn-primary:focus-visible::before { transform: t
   top: 100%;
   left: 0;
   margin-top: 16px;
-  min-width: 232px;
-  background: linear-gradient(160deg, var(--bg-2), var(--bg) 75%);
-  border: 1px solid var(--sand-faint);
-  box-shadow: 0 28px 64px rgba(0, 0, 0, .38), 0 6px 18px rgba(0, 0, 0, .24);
-  padding: 4px 0;
+  min-width: 252px;
+  border-radius: 14px;
+  background: linear-gradient(165deg, color-mix(in srgb, var(--bg-2) 97%, transparent), color-mix(in srgb, var(--bg) 96%, transparent) 75%);
+  backdrop-filter: blur(22px) saturate(1.15);
+  -webkit-backdrop-filter: blur(22px) saturate(1.15);
+  border: 1px solid color-mix(in srgb, var(--sand) 18%, transparent);
+  box-shadow: 0 30px 70px -12px rgba(0, 0, 0, .45), 0 2px 10px rgba(0, 0, 0, .18), inset 0 1px 0 color-mix(in srgb, var(--cream) 12%, transparent);
+  padding: 10px;
   display: flex;
   flex-direction: column;
+  gap: 2px;
   opacity: 0;
   visibility: hidden;
-  transform: translateY(-10px) scale(.98);
+  transform: translateY(-8px) scale(.97);
   transform-origin: top left;
   transition: opacity 220ms ease, transform 220ms cubic-bezier(.22, 1, .36, 1), visibility 220ms ease;
   z-index: 50;
-  overflow: hidden;
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .dropdown-menu { background: linear-gradient(165deg, var(--bg-2), var(--bg) 75%); }
 }
 
 .dropdown-menu::after {
   content: "";
   position: absolute;
-  top: 0; left: 0; right: 0;
+  top: 0; left: 14px; right: 14px;
   height: 2px;
-  background-image: linear-gradient(90deg, var(--accent-text) 0%, var(--shimmer-mid) 50%, var(--accent-text) 100%);
+  border-radius: 2px;
+  background-image: linear-gradient(90deg, transparent, var(--shimmer-mid) 50%, transparent);
 }
 
 .dropdown-menu.is-open { opacity: 1; visibility: visible; transform: translateY(0) scale(1); }
@@ -1959,22 +1973,20 @@ html:not([data-theme="light"]) .btn-primary:focus-visible::before { transform: t
   display: flex;
   align-items: center;
   gap: 14px;
-  padding: 13px 22px;
+  padding: 11px 12px;
   min-height: 44px;
+  border-radius: 9px;
   font-size: 11.5px;
-  letter-spacing: .12em;
+  letter-spacing: .1em;
   text-transform: uppercase;
   text-decoration: none;
   color: var(--muted);
   white-space: nowrap;
-  border-bottom: 1px solid var(--sand-faint);
   background: transparent;
   transition: background-color 200ms ease, color 200ms ease, opacity 260ms ease, transform 260ms ease;
   opacity: 0;
   transform: translateX(-6px);
 }
-
-.dropdown-menu a:last-child { border-bottom: none; }
 
 .dropdown-menu.is-open a { opacity: 1; transform: translateX(0); }
 
@@ -1984,35 +1996,50 @@ html:not([data-theme="light"]) .btn-primary:focus-visible::before { transform: t
 .dropdown-menu.is-open a:nth-child(4) { transition-delay: 130ms; }
 .dropdown-menu.is-open a:nth-child(5) { transition-delay: 160ms; }
 
-.dropdown-menu a::before {
-  content: "";
-  position: absolute;
-  left: 0; top: 0; bottom: 0;
-  width: 3px;
-  background: var(--accent-text);
-  transform: scaleY(0);
-  transition: transform 200ms ease;
-}
-
-.dropdown-menu a:hover, .dropdown-menu a:focus-visible, .dropdown-menu a.is-active { color: var(--cream); background: var(--sand-faint); }
+.dropdown-menu a:hover, .dropdown-menu a:focus-visible, .dropdown-menu a.is-active { color: var(--cream); background: color-mix(in srgb, var(--sand) 14%, transparent); }
 [data-theme="light"] .dropdown-menu a:hover,
 [data-theme="light"] .dropdown-menu a:focus-visible,
 [data-theme="light"] .dropdown-menu a.is-active { color: #2B2522; }
-.dropdown-menu a:hover::before, .dropdown-menu a:focus-visible::before, .dropdown-menu a.is-active::before { transform: scaleY(1); }
 
 .dd-num {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  border: 1px solid color-mix(in srgb, var(--accent-text) 45%, transparent);
   font-family: var(--font-ui);
   color: var(--accent-text);
-  font-size: 10px;
-  letter-spacing: .08em;
-  opacity: .75;
-  flex-shrink: 0;
-  transition: opacity 200ms ease;
+  font-size: 9.5px;
+  letter-spacing: .02em;
+  transition: background-color 200ms ease, border-color 200ms ease, color 200ms ease;
 }
 
-.dropdown-menu a:hover .dd-num, .dropdown-menu a:focus-visible .dd-num { opacity: 1; }
+.dropdown-menu a:hover .dd-num, .dropdown-menu a:focus-visible .dd-num, .dropdown-menu a.is-active .dd-num {
+  background: var(--accent-text);
+  border-color: var(--accent-text);
+  color: var(--bg);
+}
+[data-theme="light"] .dropdown-menu a:hover .dd-num,
+[data-theme="light"] .dropdown-menu a:focus-visible .dd-num,
+[data-theme="light"] .dropdown-menu a.is-active .dd-num { color: var(--cream); }
 
 .dd-label { flex: 1; }
+
+.dd-arrow {
+  flex-shrink: 0;
+  opacity: 0;
+  transform: translateX(-4px);
+  transition: opacity 200ms ease, transform 200ms ease;
+  font-size: 12px;
+}
+
+.dropdown-menu a:hover .dd-arrow, .dropdown-menu a:focus-visible .dd-arrow, .dropdown-menu a.is-active .dd-arrow {
+  opacity: .8;
+  transform: translateX(0);
+}
 
 /* ---------------------------------------------------------------------- */
 /* Mobile submenu (indented list, Capabilities divisions)                   */
