@@ -705,6 +705,7 @@ html:not([data-theme="light"]) .btn-primary:focus-visible::before { transform: t
 .hero-inner {
   position: relative;
   z-index: 2;
+  width: 100%;
   max-width: 900px;
   margin: 0 auto;
   padding: 0 clamp(20px, 5vw, 56px) 64px;
@@ -725,14 +726,59 @@ html:not([data-theme="light"]) .btn-primary:focus-visible::before { transform: t
 }
 
 .hero-headline {
-  font-size: clamp(2.6rem, 7vw, 6.4rem);
-  line-height: 1.06;
+  font-size: clamp(2.5rem, 6.6vw, 5.8rem);
+  line-height: 1.22;
+  max-width: min(21ch, 100%);
   color: var(--cream);
   text-shadow: 0 4px 28px color-mix(in srgb, var(--near-black) 80%, transparent);
+  text-wrap: balance;
+}
+
+/* Narrow phones: large display type + long unbroken German/Serbian/Croatian
+   compound words (e.g. "DIENSTLEISTUNGEN") can exceed the available line
+   width even at the smallest font-size step. Hyphenation (with break-word
+   as its fallback) is scoped to narrow viewports only — at wider
+   breakpoints every claim already fits with clean whole-word line breaks,
+   and enabling this globally makes `text-wrap: balance` split words it
+   doesn't need to, purely to even out line lengths. */
+@media (max-width: 480px) {
+  .hero-headline { overflow-wrap: break-word; hyphens: auto; }
 }
 
 .hero-headline span { display: block; }
 .hero-headline em { font-style: italic; font-weight: 500; }
+
+/* Rotating hero claims: two size tiers relative to the default (data-claim
+   "1") — the longer claims (0, 2) run a notch smaller, the shortest (3) a
+   notch larger, so every claim fits without overflow or clipping. The
+   min(...ch, 100%) cap keeps the ch-based line-break budget from ever
+   requesting more width than the hero actually has (narrow viewports +
+   large display type otherwise overflow the flex item). */
+.hero-headline[data-claim="0"],
+.hero-headline[data-claim="1"],
+.hero-headline[data-claim="2"] {
+  font-size: clamp(1.9rem, 4.7vw, 4rem);
+  line-height: 1.18;
+  max-width: min(27ch, 100%);
+}
+
+.hero-headline[data-claim="3"] {
+  font-size: clamp(2.4rem, 5.8vw, 5rem);
+  max-width: min(17ch, 100%);
+}
+
+/* Reveal fade for the rotating hero claim — the pre-state class is only
+   ever applied by JS, so without JS the headline is simply visible. */
+.hero-headline.hero-headline--pre {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.hero-headline.hero-headline--in {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity .6s ease-out .12s, transform .6s ease-out .12s;
+}
 
 .hero-support {
   color: color-mix(in srgb, var(--cream) 80%, transparent);

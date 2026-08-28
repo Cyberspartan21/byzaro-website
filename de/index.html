@@ -19,6 +19,7 @@
 
 <a class="skip-link" href="#main-content">Zum Inhalt springen</a>
 
+<noscript><style>.intro-overlay { display: none; }</style></noscript>
 <div class="intro-overlay" id="intro-overlay">
   <svg class="intro-mark" id="intro-mark" viewBox="0 0 367 390" fill="currentColor" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Byzaro Group">
     <defs><path id="bzb-intro" fill-rule="evenodd" d="M0,0 H164 V56 C161,68 145,70 145,90 C145,110 161,112 164,124 V181 H0 Z M33,32 H131 V54 A20,20 0 0 1 111,74 H76 V107 H110 A21,21 0 0 1 131,128 V149 H33 Z"/></defs>
@@ -110,14 +111,10 @@
 
 <main id="main-content">
   <section class="hero">
-    <img class="hero-bg-photo" src="../assets/img/home.jpg" width="1600" height="900" loading="eager" fetchpriority="high" alt="" aria-hidden="true">
+    <img class="hero-bg-photo" id="hero-bg-photo" src="../assets/img/hero-1.jpg" width="1600" height="900" loading="eager" fetchpriority="high" alt="" aria-hidden="true">
     <div class="hero-inner">
       <p class="hero-label">BYZARO GROUP — INTERNATIONAL BUSINESS &amp; OPPORTUNITY GROUP</p>
-      <h1 class="hero-headline">
-        <span>KOMPLEXE PROBLEME.</span>
-        <span>EIN</span>
-        <span><em class="metal-text">NETZWERK.</em></span>
-      </h1>
+      <h1 class="hero-headline" id="hero-headline" data-claim="0">IHRE AMBITION BESTIMMT DAS ZIEL. UNSER NETZWERK DEN WEG.</h1>
       <p class="hero-support">Internationale Expertise, Beziehungen und Umsetzung – über Wirtschaft, Talent, Technologie, Immobilien und private Kapitalmärkte hinweg.</p>
       <div class="hero-actions">
         <a class="btn btn-primary" href="contact.html">Opportunity besprechen</a>
@@ -126,6 +123,65 @@
     </div>
     <div class="hero-close-rule ledger-rule" aria-hidden="true"></div>
   </section>
+  <script>
+  (function () {
+    var CLAIMS = [
+      { text: "IHRE AMBITION BESTIMMT DAS ZIEL. UNSER NETZWERK DEN WEG.", metal: "NETZWERK" },
+      { text: "WO EINZELNE DIENSTLEISTUNGEN ENDEN, BEGINNT BYZARO.", metal: "BYZARO" },
+      { text: "MENSCHEN. TECHNOLOGIE. KAPITAL. IMMOBILIEN. EINE GRUPPE.", metal: "EINE GRUPPE" },
+      { text: "MEHRERE DISZIPLINEN. EIN PARTNER. EIN ZIEL.", metal: "EIN ZIEL" }
+    ];
+    var img = document.getElementById('hero-bg-photo');
+    var h1 = document.getElementById('hero-headline');
+    if (!img || !h1) { return; }
+
+    var pool = [0, 1, 2, 3];
+    var idx;
+    try {
+      var prevRaw = window.localStorage.getItem('bz-hero-idx');
+      var prevIdx = prevRaw === null ? null : parseInt(prevRaw, 10);
+      var candidates = pool;
+      if (prevIdx !== null && !isNaN(prevIdx) && pool.indexOf(prevIdx) !== -1) {
+        candidates = pool.filter(function (n) { return n !== prevIdx; });
+      }
+      idx = candidates[Math.floor(Math.random() * candidates.length)];
+      window.localStorage.setItem('bz-hero-idx', String(idx));
+    } catch (e) {
+      idx = pool[Math.floor(Math.random() * pool.length)];
+    }
+
+    var claim = CLAIMS[idx] || CLAIMS[0];
+    img.src = '../assets/img/hero-' + (idx + 1) + '.jpg';
+
+    var text = claim.text;
+    var metal = claim.metal;
+    var mIdx = metal ? text.indexOf(metal) : -1;
+    var html;
+    if (mIdx === -1) {
+      html = text;
+    } else {
+      var before = text.slice(0, mIdx);
+      var after = text.slice(mIdx + metal.length);
+      /* Satzzeichen direkt nach dem Metal-Wort wandern MIT in den Span —
+         sonst bricht text-wrap:balance den Punkt in eine eigene Zeile um. */
+      var punct = (after.match(/^[.,!?…]+/) || [''])[0];
+      after = after.slice(punct.length);
+      html = before + '<span class="metal-text">' + metal + punct + '</span>' + after;
+    }
+    h1.setAttribute('data-claim', String(idx));
+    h1.innerHTML = html;
+
+    var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!reduceMotion) {
+      h1.classList.add('hero-headline--pre');
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () {
+          h1.classList.add('hero-headline--in');
+        });
+      });
+    }
+  })();
+  </script>
 
   <section class="section band-invert wine-band lacquer" id="group">
     <svg class="wine-band-mark" viewBox="0 0 367 390" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
