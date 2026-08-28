@@ -87,7 +87,30 @@
     });
   });
 
-  /* Reveal on scroll -------------------------------------------------------- */
+  /* Reveal on scroll, with staggered children -------------------------------- */
+  var STAGGER_MAP = [
+    { parent: '.ledger-rows', item: '.ledger-row-wrap' },
+    { parent: '.scenario-grid', item: '.scenario-card' },
+    { parent: '.related-divisions', item: '.related-card' },
+    { parent: '.process-steps', item: '.process-step' },
+    { parent: '.service-detail-list', item: 'li' },
+    { parent: '.category-grid', item: 'label' },
+    { parent: '.legal-table', item: '.legal-row' },
+    { parent: '.opp-rows', item: '.opp-row' },
+    { parent: '.reach-rows', item: '.reach-row' }
+  ];
+  STAGGER_MAP.forEach(function (rule) {
+    document.querySelectorAll(rule.parent + '.reveal').forEach(function (parent) {
+      var items = parent.querySelectorAll(rule.item);
+      if (!items.length) return;
+      parent.classList.add('reveal--stagger');
+      items.forEach(function (item, i) {
+        item.classList.add('stagger-item');
+        item.style.transitionDelay = (i * 40) + 'ms';
+      });
+    });
+  });
+
   var reveals = document.querySelectorAll('.reveal');
   if ('IntersectionObserver' in window) {
     var io = new IntersectionObserver(function (entries) {
@@ -101,6 +124,47 @@
     reveals.forEach(function (el) { io.observe(el); });
   } else {
     reveals.forEach(function (el) { el.classList.add('is-visible'); });
+  }
+
+  /* Ghost section numerals ---------------------------------------------------- */
+  document.querySelectorAll('.section').forEach(function (section) {
+    var head = section.querySelector(':scope > .container > .section-head');
+    if (!head) return;
+    var numEl = head.querySelector('.section-numeral');
+    if (!numEl) return;
+    var txt = (numEl.textContent || '').trim();
+    if (!txt || txt === '—' || txt === '-') return;
+    var ghost = document.createElement('span');
+    ghost.className = 'ghost-num';
+    ghost.setAttribute('aria-hidden', 'true');
+    ghost.textContent = txt;
+    section.insertBefore(ghost, section.firstChild);
+  });
+
+  /* Ambient parallax on decorative image bands (desktop, motion-ok only) ------ */
+  if (window.matchMedia('(hover: hover)').matches &&
+      window.matchMedia('(prefers-reduced-motion: no-preference)').matches) {
+    var bands = document.querySelectorAll('.img-band.img-tint > img');
+    if (bands.length) {
+      var bandTicking = false;
+      var updateParallax = function () {
+        var vh = window.innerHeight;
+        bands.forEach(function (img) {
+          var rect = img.parentElement.getBoundingClientRect();
+          var center = rect.top + rect.height / 2 - vh / 2;
+          var pct = Math.max(-8, Math.min(8, (center / vh) * -16));
+          img.style.transform = 'translateY(' + pct.toFixed(2) + '%)';
+        });
+        bandTicking = false;
+      };
+      window.addEventListener('scroll', function () {
+        if (!bandTicking) {
+          window.requestAnimationFrame(updateParallax);
+          bandTicking = true;
+        }
+      }, { passive: true });
+      updateParallax();
+    }
   }
 
   /* Capabilities dropdown (desktop) ------------------------------------------ */

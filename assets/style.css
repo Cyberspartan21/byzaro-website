@@ -42,6 +42,31 @@
 
   --container: 1320px;
   --section-pad: clamp(96px, 12vh, 180px);
+
+  /* Cinematic gradient system — derived from the tokens above via color-mix,
+     never a new raw hex. Identical across themes because --wine itself is
+     identical across themes (measured base for dark scrims/wine bands). */
+  --wine-deep: color-mix(in srgb, var(--wine) 60%, black);
+  --wine-abyss: color-mix(in srgb, var(--wine-deep) 55%, black);
+  --near-black: color-mix(in srgb, var(--wine-deep) 45%, black);
+
+  /* Metal (gold/sand) text gradient — bright "champagne" variant for use on
+     dark/photographic grounds (hero, division heroes). Always same in both
+     themes because the ground it sits on is always dark there. */
+  --metal-bright-a: color-mix(in srgb, var(--sand) 60%, var(--wine) 15%);
+  --metal-bright-b: color-mix(in srgb, var(--cream) 88%, white 12%);
+  --metal-bright-c: var(--sand);
+  --metal-bright-d: color-mix(in srgb, var(--cream) 95%, white 5%);
+
+  /* Bronze variant of the same motif for use on theme-following (flat) light
+     grounds — dark enough to read on cream. */
+  --metal-bronze-a: color-mix(in srgb, var(--wine) 87%, black 13%);
+  --metal-bronze-b: color-mix(in srgb, var(--wine) 60%, var(--sand) 40%);
+  --metal-bronze-c: color-mix(in srgb, var(--wine) 65%, var(--sand) 35%);
+  --metal-bronze-d: color-mix(in srgb, var(--wine) 83%, black 17%);
+
+  /* Gold-shimmer for hairline rules (ledger-rule) — derived from accent-text. */
+  --shimmer-mid: color-mix(in srgb, var(--accent-text) 35%, var(--cream) 65%);
 }
 
 /* ---------------------------------------------------------------------- */
@@ -164,9 +189,12 @@ textarea:focus-visible,
 .section {
   position: relative;
   padding: var(--section-pad) 0;
+  background-image: linear-gradient(178deg, var(--bg) 0%, color-mix(in srgb, var(--bg-2) 32%, var(--bg) 68%) 100%);
 }
 
-.section--panel { background: var(--bg-2); }
+.section--panel {
+  background-image: linear-gradient(2deg, var(--bg-2) 0%, color-mix(in srgb, var(--bg-2) 72%, var(--bg) 28%) 100%);
+}
 
 .lacquer {
   background-image: linear-gradient(180deg, rgba(255,255,255,.05) 0%, rgba(0,0,0,.05) 100%);
@@ -226,7 +254,7 @@ textarea:focus-visible,
   position: absolute;
   top: 0; left: 0; right: 0;
   height: 2px;
-  background: var(--accent-text);
+  background-image: linear-gradient(90deg, var(--accent-text) 0%, var(--shimmer-mid) 50%, var(--accent-text) 100%);
 }
 
 .ledger-rule::after {
@@ -269,39 +297,69 @@ textarea:focus-visible,
   text-align: center;
   transition: background-color 200ms ease, color 200ms ease, border-color 200ms ease;
   white-space: nowrap;
+  min-height: 44px;
 }
 
+/* Primary CTA — gradient fill at rest, sweeping highlight on hover/focus. */
 .btn-primary {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   border: 1px solid var(--sand);
   color: var(--cream);
-  background: transparent;
+  background-image: linear-gradient(135deg, var(--wine-deep) 0%, var(--wine) 60%, var(--wine-abyss) 100%);
+}
+
+.btn-primary::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image: linear-gradient(100deg, var(--sand) 0%, var(--cream) 55%, var(--sand) 100%);
+  transform: translateX(-105%);
+  transition: transform 250ms ease;
 }
 
 html:not([data-theme="light"]) .btn-primary:hover,
-html:not([data-theme="light"]) .btn-primary:focus-visible {
-  background: var(--sand);
-  color: var(--bg);
-}
+html:not([data-theme="light"]) .btn-primary:focus-visible { color: var(--wine-abyss); }
+html:not([data-theme="light"]) .btn-primary:hover::before,
+html:not([data-theme="light"]) .btn-primary:focus-visible::before { transform: translateX(0); }
 
-[data-theme="light"] .btn-primary { color: var(--wine); border-color: var(--wine); }
-[data-theme="light"] .btn-primary:hover,
-[data-theme="light"] .btn-primary:focus-visible {
-  background: var(--wine);
+[data-theme="light"] .btn-primary {
   color: var(--cream);
+  border-color: var(--wine);
+  background-image: linear-gradient(135deg, var(--wine) 0%, var(--wine-deep) 100%);
 }
+[data-theme="light"] .btn-primary::before {
+  background-image: linear-gradient(100deg, var(--wine-abyss) 0%, var(--wine) 55%, var(--wine-abyss) 100%);
+}
+[data-theme="light"] .btn-primary:hover,
+[data-theme="light"] .btn-primary:focus-visible { color: var(--cream); }
+[data-theme="light"] .btn-primary:hover::before,
+[data-theme="light"] .btn-primary:focus-visible::before { transform: translateX(0); }
 
-/* Buttons inside the inverted sand/wine band must contrast with THAT band,
-   not the page default — --on-sand-strong already flips correctly per theme. */
-.band-invert .btn-primary { color: var(--on-sand-strong); border-color: var(--on-sand-strong); }
+/* Buttons inside the inverted sand/wine band (or a forced wine-band) must
+   contrast with THAT band, not the page default. */
+.band-invert .btn-primary,
+.wine-band .btn-primary {
+  color: var(--on-sand-strong);
+  border-color: var(--on-sand-strong);
+  background-image: none;
+  background-color: transparent;
+}
+.band-invert .btn-primary::before,
+.wine-band .btn-primary::before { background-image: linear-gradient(100deg, var(--on-sand-strong) 0%, color-mix(in srgb, var(--on-sand-strong) 70%, var(--cream) 30%) 55%, var(--on-sand-strong) 100%); }
 .band-invert .btn-primary:hover,
-.band-invert .btn-primary:focus-visible {
-  background: var(--on-sand-strong);
-  color: var(--sand);
-}
+.band-invert .btn-primary:focus-visible,
+.wine-band .btn-primary:hover,
+.wine-band .btn-primary:focus-visible { color: var(--sand); }
 [data-theme="light"] .band-invert .btn-primary:hover,
-[data-theme="light"] .band-invert .btn-primary:focus-visible {
-  color: var(--wine);
-}
+[data-theme="light"] .band-invert .btn-primary:focus-visible { color: var(--wine); }
+
+.wine-band .btn-primary { color: var(--sand); border-color: var(--sand); }
+.wine-band .btn-primary::before { background-image: linear-gradient(100deg, var(--sand) 0%, var(--cream) 55%, var(--sand) 100%); }
+.wine-band .btn-primary:hover,
+.wine-band .btn-primary:focus-visible { color: var(--wine-abyss); }
 
 .band-invert .section-numeral,
 .band-invert .label { color: var(--on-sand-strong); }
@@ -430,18 +488,34 @@ html:not([data-theme="light"]) .btn-primary:focus-visible {
 }
 
 .nav-links a:not(.btn) {
+  position: relative;
   text-decoration: none;
   color: var(--muted);
   padding: 4px 0;
-  border-bottom: 1px solid transparent;
-  transition: color 200ms ease, border-color 200ms ease;
+  transition: color 200ms ease;
+}
+
+.nav-links a:not(.btn)::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 1px;
+  background: var(--accent-text);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 200ms ease;
 }
 
 .nav-links a:not(.btn):hover,
 .nav-links a:not(.btn):focus-visible,
 .nav-links a.is-active {
   color: inherit;
-  border-bottom-color: var(--accent-text);
+}
+
+.nav-links a:not(.btn):hover::after,
+.nav-links a:not(.btn):focus-visible::after,
+.nav-links a.is-active::after {
+  transform: scaleX(1);
 }
 
 .nav-cta { padding: 11px 20px; font-size: 11px; }
@@ -579,7 +653,37 @@ html:not([data-theme="light"]) .btn-primary:focus-visible {
   text-align: center;
   overflow: hidden;
   padding: 140px 0 0;
-  background-color: var(--bg);
+  background-color: var(--near-black);
+}
+
+/* Full-bleed cinematic photo hero (home) — same in both themes, the photo
+   and its scrim are theme-independent (a photo can't "go light"). */
+.hero-bg-photo {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(1.05) contrast(1.03);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero-bg-photo { animation: bz-kenburns 26s ease-in-out infinite alternate; }
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background-image:
+    radial-gradient(70% 55% at 50% 16%, color-mix(in srgb, var(--sand) 18%, transparent), transparent 70%),
+    linear-gradient(180deg,
+      color-mix(in srgb, var(--wine-deep) 62%, transparent) 0%,
+      color-mix(in srgb, var(--wine-deep) 10%, transparent) 40%,
+      color-mix(in srgb, var(--near-black) 80%, transparent) 100%);
 }
 
 .hero-mark-bg {
@@ -609,22 +713,26 @@ html:not([data-theme="light"]) .btn-primary:focus-visible {
   font-size: 11px;
   letter-spacing: .25em;
   text-transform: uppercase;
-  color: var(--accent-text);
+  color: var(--sand);
   max-width: 46ch;
+  text-shadow: 0 2px 16px color-mix(in srgb, var(--near-black) 75%, transparent);
 }
 
 .hero-headline {
   font-size: clamp(2.6rem, 7vw, 6.4rem);
   line-height: 1.06;
+  color: var(--cream);
+  text-shadow: 0 4px 28px color-mix(in srgb, var(--near-black) 80%, transparent);
 }
 
 .hero-headline span { display: block; }
 .hero-headline em { font-style: italic; font-weight: 500; }
 
 .hero-support {
-  color: var(--muted);
+  color: color-mix(in srgb, var(--cream) 80%, transparent);
   max-width: 56ch;
   font-size: clamp(.95rem, 1.4vw, 1.1rem);
+  text-shadow: 0 2px 16px color-mix(in srgb, var(--near-black) 75%, transparent);
 }
 
 .hero-actions {
@@ -638,16 +746,36 @@ html:not([data-theme="light"]) .btn-primary:focus-visible {
 
 .hero-close-rule { position: relative; z-index: 2; width: 100%; max-width: 640px; margin: 0 auto; }
 
+/* The hero always sits on a dark photo scrim, in BOTH themes — its controls
+   must not follow the page theme's flip (which would put dark wine text on
+   a dark scrim in light mode). Pin them to the cream/sand pairing. */
+.hero .text-link {
+  color: var(--sand);
+  border-bottom-color: color-mix(in srgb, var(--sand) 45%, transparent);
+  text-shadow: 0 2px 14px color-mix(in srgb, var(--near-black) 70%, transparent);
+}
+.hero .text-link:hover, .hero .text-link:focus-visible { border-color: var(--sand); color: var(--cream); }
+
+.hero .btn-primary {
+  color: var(--cream);
+  border-color: var(--sand);
+}
+.hero .btn-primary:hover, .hero .btn-primary:focus-visible { color: var(--wine-abyss); }
+
 /* ---------------------------------------------------------------------- */
 /* The Group / Closing — inverted band (sand in dark, wine in light)        */
 /* ---------------------------------------------------------------------- */
 
 .band-invert {
-  background: var(--sand);
+  background-image: linear-gradient(175deg, var(--cream) 0%, var(--sand) 58%, color-mix(in srgb, var(--sand) 78%, var(--muted) 22%) 100%);
   color: var(--on-sand-strong);
 }
 
-[data-theme="light"] .band-invert { background: var(--wine); }
+[data-theme="light"] .band-invert {
+  background-image:
+    radial-gradient(120% 60% at 82% -10%, color-mix(in srgb, var(--sand) 22%, transparent), transparent 55%),
+    linear-gradient(165deg, var(--wine-deep) 0%, var(--wine) 55%, var(--wine-abyss) 100%);
+}
 
 .triad {
   display: flex;
@@ -698,6 +826,7 @@ html:not([data-theme="light"]) .btn-primary:focus-visible {
 .ledger-row-wrap { border-bottom: 1px solid var(--sand-faint); }
 
 .ledger-row {
+  position: relative;
   width: 100%;
   display: flex;
   align-items: center;
@@ -711,7 +840,19 @@ html:not([data-theme="light"]) .btn-primary:focus-visible {
   transition: background-color 200ms ease;
 }
 
+.ledger-row::before {
+  content: "";
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: var(--accent-text);
+  transform: scaleY(0);
+  transition: transform 200ms ease;
+}
+
 .ledger-row:hover, .ledger-row:focus-visible { background: var(--bg-2); }
+.ledger-row:hover::before, .ledger-row:focus-visible::before { transform: scaleY(1); }
+.ledger-row:hover .ledger-thumb img, .ledger-row:focus-visible .ledger-thumb img { transform: scale(1.06); }
 
 .ledger-num {
   font-family: var(--font-ui);
@@ -1118,6 +1259,7 @@ html:not([data-theme="light"]) .btn-primary:focus-visible {
   object-fit: cover;
   filter: saturate(.9);
   display: block;
+  transition: transform 250ms ease;
 }
 
 .img-tint::after {
@@ -1132,7 +1274,17 @@ html:not([data-theme="light"]) .btn-primary:focus-visible {
 .img-band {
   position: relative;
   overflow: hidden;
-  min-height: clamp(220px, 40vh, 420px);
+  min-height: clamp(320px, 58vh, 620px);
+}
+
+/* Parallax buffer: on desktop the image is oversized so a JS-driven
+   translateY(±8%) never reveals an edge. Mobile/no-hover stays static. */
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .img-band.img-tint > img {
+    height: 120%;
+    top: -10%;
+    will-change: transform;
+  }
 }
 
 /* Small thumbnail used inside the capabilities ledger rows. */
@@ -1154,7 +1306,7 @@ html:not([data-theme="light"]) .btn-primary:focus-visible {
 
 .division-hero {
   position: relative;
-  min-height: clamp(380px, 56vh, 640px);
+  min-height: clamp(420px, 72vh, 760px);
   display: flex;
   align-items: flex-end;
   overflow: hidden;
@@ -1166,11 +1318,11 @@ html:not([data-theme="light"]) .btn-primary:focus-visible {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  filter: saturate(.9);
+  filter: saturate(1.05) contrast(1.02);
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .division-hero img { animation: bz-kenburns 18s ease-in-out infinite alternate; }
+  .division-hero img { animation: bz-kenburns 22s ease-in-out infinite alternate; }
 }
 
 @keyframes bz-kenburns {
@@ -1178,29 +1330,44 @@ html:not([data-theme="light"]) .btn-primary:focus-visible {
   to { transform: scale(1.06); }
 }
 
+/* Photo stays clear top/right; a strong scrim (theme-independent, always
+   dark — the image can't "go light") pools bottom/left behind the text. */
 .division-hero::after {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg,
-    color-mix(in srgb, var(--wine) 28%, transparent) 0%,
-    color-mix(in srgb, var(--wine) 12%, transparent) 34%,
-    color-mix(in srgb, var(--bg) 74%, transparent) 66%,
-    color-mix(in srgb, var(--bg) 96%, transparent) 100%);
   pointer-events: none;
+  background-image:
+    linear-gradient(100deg,
+      color-mix(in srgb, var(--wine-deep) 80%, transparent) 0%,
+      color-mix(in srgb, var(--wine-deep) 32%, transparent) 45%,
+      transparent 78%),
+    linear-gradient(0deg,
+      color-mix(in srgb, var(--near-black) 94%, transparent) 0%,
+      color-mix(in srgb, var(--near-black) 55%, transparent) 32%,
+      transparent 68%);
 }
 
 .division-hero-inner {
   position: relative;
   z-index: 2;
   width: 100%;
+  color: var(--cream);
   padding-top: clamp(48px, 8vw, 80px);
   padding-bottom: clamp(32px, 5vw, 56px);
 }
 
 .division-hero .division-eyebrow { justify-content: flex-start; margin-bottom: 14px; }
-.division-hero .division-name { text-align: left; }
-.division-hero .division-line { text-align: left; max-width: 56ch; margin-top: 14px; }
+.division-hero .label,
+.division-hero .section-numeral { color: var(--sand); }
+.division-hero .division-name { text-align: left; color: var(--cream); text-shadow: 0 4px 24px color-mix(in srgb, var(--near-black) 75%, transparent); }
+.division-hero .division-line {
+  text-align: left;
+  max-width: 56ch;
+  margin-top: 14px;
+  color: color-mix(in srgb, var(--cream) 82%, transparent);
+  text-shadow: 0 2px 14px color-mix(in srgb, var(--near-black) 70%, transparent);
+}
 
 /* ---------------------------------------------------------------------- */
 /* Division services — nummerierte Ledger-Reihen mit Erklärsatz             */
@@ -1335,18 +1502,53 @@ html:not([data-theme="light"]) .btn-primary:focus-visible {
 }
 
 .related-card {
+  position: relative;
   display: block;
+  overflow: hidden;
+  min-height: clamp(240px, 30vw, 320px);
   text-decoration: none;
-  color: inherit;
+  color: var(--cream);
   border: 1px solid var(--frame-border);
   background: var(--bg-2);
+  transition: transform 250ms ease, box-shadow 250ms ease;
 }
 
-.related-card-body { padding: 18px 20px 22px; display: flex; flex-direction: column; gap: 6px; }
+.related-card:hover, .related-card:focus-visible {
+  transform: translateY(-4px);
+  box-shadow: 0 22px 46px color-mix(in srgb, var(--near-black) 45%, transparent);
+}
 
-.related-card-name { font-family: var(--font-display); font-size: 1.2rem; }
+.related-card .related-thumb {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+}
 
-.related-card-line { color: var(--muted); font-size: .88rem; line-height: 1.6; font-family: var(--font-ui); }
+.related-card:hover .related-thumb img,
+.related-card:focus-visible .related-thumb img { transform: scale(1.06); }
+
+/* A stronger, bottom-heavy scrim (overrides the generic .img-tint one) so the
+   caption below always reads regardless of the photo underneath. */
+.related-card .related-thumb.img-tint::after {
+  background-image: linear-gradient(0deg,
+    color-mix(in srgb, var(--near-black) 92%, transparent) 0%,
+    color-mix(in srgb, var(--near-black) 55%, transparent) 45%,
+    transparent 85%);
+}
+
+.related-card-body {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  z-index: 2;
+  padding: 18px 20px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.related-card-name { font-family: var(--font-display); font-size: 1.2rem; color: var(--cream); }
+
+.related-card-line { color: color-mix(in srgb, var(--cream) 75%, transparent); font-size: .88rem; line-height: 1.6; font-family: var(--font-ui); }
 
 /* ---------------------------------------------------------------------- */
 /* Division compliance / partner-coordination block                        */
@@ -1493,6 +1695,150 @@ html:not([data-theme="light"]) .btn-primary:focus-visible {
 .opp-tag { color: var(--accent-text); font-family: var(--font-ui); font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; flex-shrink: 0; }
 
 /* ---------------------------------------------------------------------- */
+/* Wine-band — forced wine gradient (theme-independent "loud" band), used on
+   the closing/CTA sections and the Group section. Deliberately placed here
+   (late in the cascade) so it wins over .band-invert / .section defaults
+   for elements carrying both classes.                                     */
+/* ---------------------------------------------------------------------- */
+
+.wine-band {
+  position: relative;
+  color: var(--cream);
+  background-image:
+    radial-gradient(120% 65% at 14% -8%, color-mix(in srgb, var(--sand) 26%, transparent), transparent 58%),
+    linear-gradient(165deg, var(--wine-deep) 0%, var(--wine) 55%, var(--wine-abyss) 100%);
+}
+
+.wine-band--alt {
+  background-image:
+    radial-gradient(120% 65% at 86% 108%, color-mix(in srgb, var(--sand) 22%, transparent), transparent 58%),
+    linear-gradient(345deg, var(--wine-deep) 0%, var(--wine) 55%, var(--wine-abyss) 100%);
+}
+
+.wine-band .label,
+.wine-band .section-numeral,
+.wine-band .division-eyebrow .label { color: var(--sand); }
+
+.wine-band .lede,
+.wine-band .audience,
+.wine-band .division-line,
+.wine-band .closing-headline,
+.wine-band .section-title,
+.wine-band h2, .wine-band h3 { color: var(--cream); }
+
+.wine-band .lede, .wine-band .audience { color: color-mix(in srgb, var(--cream) 82%, transparent); }
+
+.wine-band .triad,
+.wine-band .triad-word { border-color: color-mix(in srgb, var(--cream) 30%, transparent); }
+
+.wine-band .ghost-num { color: var(--cream); opacity: .07; }
+
+.wine-band .text-link { color: var(--sand); border-bottom-color: color-mix(in srgb, var(--sand) 40%, transparent); }
+.wine-band .text-link:hover, .wine-band .text-link:focus-visible { border-color: var(--sand); color: var(--cream); }
+
+/* Large B-mark watermark, cropped, inside a wine band. */
+.wine-band-mark {
+  position: absolute;
+  right: -8%;
+  top: 50%;
+  transform: translateY(-50%);
+  width: auto;
+  height: 90vh;
+  max-height: 900px;
+  color: var(--cream);
+  opacity: .06;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.wine-band .container { position: relative; z-index: 1; }
+
+/* ---------------------------------------------------------------------- */
+/* Ghost section numerals — huge, faint Playfair numerals behind titles.    */
+/* ---------------------------------------------------------------------- */
+
+.section { overflow: hidden; }
+.section .container { position: relative; z-index: 1; }
+
+.ghost-num {
+  position: absolute;
+  top: clamp(-30px, -3vw, 20px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 0;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(9rem, 20vw, 14rem);
+  line-height: 1;
+  color: var(--accent-text);
+  opacity: .05;
+  white-space: nowrap;
+  pointer-events: none;
+  user-select: none;
+}
+
+[data-theme="light"] .ghost-num { opacity: .045; }
+
+.division-hero .ghost-num,
+.division-hero-inner .ghost-num { display: none; }
+
+/* ---------------------------------------------------------------------- */
+/* Metal (gold/sand) headline text — one keyword/phrase per page.           */
+/* ---------------------------------------------------------------------- */
+
+.metal-text {
+  background-image: linear-gradient(100deg,
+    var(--metal-bright-a) 0%,
+    var(--metal-bright-b) 45%,
+    var(--metal-bright-c) 60%,
+    var(--metal-bright-d) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Adaptive variant: for headlines on a FLAT, theme-following ground (not a
+   photo scrim) — switches to the darker bronze gradient in light theme so
+   it stays readable on cream. */
+.metal-text--adaptive {
+  background-image: linear-gradient(100deg,
+    var(--metal-bright-a) 0%,
+    var(--metal-bright-b) 45%,
+    var(--metal-bright-c) 60%,
+    var(--metal-bright-d) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+[data-theme="light"] .metal-text--adaptive {
+  background-image: linear-gradient(100deg,
+    var(--metal-bronze-a) 0%,
+    var(--metal-bronze-b) 45%,
+    var(--metal-bronze-c) 60%,
+    var(--metal-bronze-d) 100%);
+}
+
+@supports not (background-clip: text) {
+  .metal-text, .metal-text--adaptive { color: var(--sand); background-image: none; }
+}
+
+/* ---------------------------------------------------------------------- */
+/* Reveal stagger — direct children of a .reveal container fade in with a  */
+/* short cascading delay (set inline by site.js) instead of all at once.   */
+/* ---------------------------------------------------------------------- */
+
+.reveal--stagger { opacity: 1; transform: none; transition: none; }
+
+.stagger-item {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 350ms ease-out, transform 350ms ease-out;
+}
+
+.reveal--stagger.is-visible .stagger-item { opacity: 1; transform: translateY(0); }
+
+/* ---------------------------------------------------------------------- */
 /* Reduced motion                                                           */
 /* ---------------------------------------------------------------------- */
 
@@ -1504,6 +1850,8 @@ html:not([data-theme="light"]) .btn-primary:focus-visible {
     scroll-behavior: auto !important;
   }
   .reveal { opacity: 1; transform: none; }
+  .stagger-item { opacity: 1 !important; transform: none !important; }
+  .hero-bg-photo, .division-hero img { animation: none !important; }
 }
 
 /* ---------------------------------------------------------------------- */
