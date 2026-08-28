@@ -1916,46 +1916,103 @@ html:not([data-theme="light"]) .btn-primary:focus-visible::before { transform: t
   position: absolute;
   top: 100%;
   left: 0;
-  margin-top: 14px;
-  min-width: 200px;
-  background: var(--bg);            /* opak — kein durchscheinender Hero-Text */
+  margin-top: 16px;
+  min-width: 232px;
+  background: linear-gradient(160deg, var(--bg-2), var(--bg) 75%);
   border: 1px solid var(--sand-faint);
-  box-shadow: 0 18px 42px rgba(0, 0, 0, .12);
-  padding: 8px 0;
+  box-shadow: 0 28px 64px rgba(0, 0, 0, .38), 0 6px 18px rgba(0, 0, 0, .24);
+  padding: 4px 0;
   display: flex;
   flex-direction: column;
   opacity: 0;
   visibility: hidden;
-  transform: translateY(-6px);
-  transition: opacity 180ms ease, transform 180ms ease, visibility 180ms ease;
+  transform: translateY(-10px) scale(.98);
+  transform-origin: top left;
+  transition: opacity 220ms ease, transform 220ms cubic-bezier(.22, 1, .36, 1), visibility 220ms ease;
   z-index: 50;
+  overflow: hidden;
 }
 
-.dropdown-menu.is-open { opacity: 1; visibility: visible; transform: translateY(0); }
+.dropdown-menu::after {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background-image: linear-gradient(90deg, var(--accent-text) 0%, var(--shimmer-mid) 50%, var(--accent-text) 100%);
+}
 
-/* Unsichtbarer Steg über der 14px-Lücke, damit das Menü beim
+.dropdown-menu.is-open { opacity: 1; visibility: visible; transform: translateY(0) scale(1); }
+
+/* Unsichtbarer Steg über der 16px-Lücke, damit das Menü beim
    Diagonal-Bewegen der Maus vom Trigger ins Menü nicht zuklappt. */
 .dropdown-menu::before {
   content: "";
   position: absolute;
-  top: -14px;
+  top: -16px;
   left: 0;
   right: 0;
-  height: 14px;
+  height: 16px;
 }
 
 .dropdown-menu a {
-  padding: 10px 20px;
-  font-size: 11px;
-  letter-spacing: .1em;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 13px 22px;
+  min-height: 44px;
+  font-size: 11.5px;
+  letter-spacing: .12em;
   text-transform: uppercase;
   text-decoration: none;
   color: var(--muted);
   white-space: nowrap;
-  border-bottom: none;
+  border-bottom: 1px solid var(--sand-faint);
+  background: transparent;
+  transition: background-color 200ms ease, color 200ms ease, opacity 260ms ease, transform 260ms ease;
+  opacity: 0;
+  transform: translateX(-6px);
 }
 
-.dropdown-menu a:hover, .dropdown-menu a:focus-visible, .dropdown-menu a.is-active { color: inherit; background: var(--sand-faint); }
+.dropdown-menu a:last-child { border-bottom: none; }
+
+.dropdown-menu.is-open a { opacity: 1; transform: translateX(0); }
+
+.dropdown-menu.is-open a:nth-child(1) { transition-delay: 40ms; }
+.dropdown-menu.is-open a:nth-child(2) { transition-delay: 70ms; }
+.dropdown-menu.is-open a:nth-child(3) { transition-delay: 100ms; }
+.dropdown-menu.is-open a:nth-child(4) { transition-delay: 130ms; }
+.dropdown-menu.is-open a:nth-child(5) { transition-delay: 160ms; }
+
+.dropdown-menu a::before {
+  content: "";
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: var(--accent-text);
+  transform: scaleY(0);
+  transition: transform 200ms ease;
+}
+
+.dropdown-menu a:hover, .dropdown-menu a:focus-visible, .dropdown-menu a.is-active { color: var(--cream); background: var(--sand-faint); }
+[data-theme="light"] .dropdown-menu a:hover,
+[data-theme="light"] .dropdown-menu a:focus-visible,
+[data-theme="light"] .dropdown-menu a.is-active { color: #2B2522; }
+.dropdown-menu a:hover::before, .dropdown-menu a:focus-visible::before, .dropdown-menu a.is-active::before { transform: scaleY(1); }
+
+.dd-num {
+  font-family: var(--font-ui);
+  color: var(--accent-text);
+  font-size: 10px;
+  letter-spacing: .08em;
+  opacity: .75;
+  flex-shrink: 0;
+  transition: opacity 200ms ease;
+}
+
+.dropdown-menu a:hover .dd-num, .dropdown-menu a:focus-visible .dd-num { opacity: 1; }
+
+.dd-label { flex: 1; }
 
 /* ---------------------------------------------------------------------- */
 /* Mobile submenu (indented list, Capabilities divisions)                   */
