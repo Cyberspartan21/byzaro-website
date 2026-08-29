@@ -272,12 +272,20 @@ textarea:focus-visible,
 /* ---------------------------------------------------------------------- */
 
 .panel {
+  position: relative;
+  background: var(--bg-2);
   border: 1px solid var(--frame-border);
-  padding: 6px;
+}
+
+.panel::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background-image: linear-gradient(90deg, var(--accent-text) 0%, var(--shimmer-mid) 50%, var(--accent-text) 100%);
 }
 
 .panel-inner {
-  border: 1px solid var(--frame-border);
   padding: clamp(28px, 5vw, 56px);
 }
 
@@ -1094,6 +1102,24 @@ html:not([data-theme="light"]) .btn-primary:focus-visible::before { transform: t
 /* International reach — ledger rows                                        */
 /* ---------------------------------------------------------------------- */
 
+.reach-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(28px, 5vw, 48px);
+  align-items: stretch;
+}
+
+@media (min-width: 860px) { .reach-layout { grid-template-columns: 1.1fr .9fr; } }
+
+.reach-media {
+  aspect-ratio: 16 / 9;
+  border-radius: 0;
+}
+
+@media (min-width: 860px) {
+  .reach-media { aspect-ratio: auto; height: 100%; min-height: 340px; }
+}
+
 .reach-rows { border-top: 1px solid var(--sand-faint); max-width: 640px; margin: 0 auto; }
 
 .reach-row {
@@ -1331,31 +1357,6 @@ html:not([data-theme="light"]) .btn-primary:focus-visible::before { transform: t
   color: var(--accent-text);
   transform: translateY(-3px);
 }
-
-.division-aside {
-  border: 1px solid var(--frame-border);
-  padding: 6px;
-}
-
-.division-aside-inner {
-  border: 1px solid var(--frame-border);
-  padding: clamp(20px, 3vw, 30px);
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-}
-
-.division-aside .use-case {
-  font-family: var(--font-display);
-  font-style: italic;
-  color: inherit;
-  font-size: 1.02rem;
-  line-height: 1.6;
-}
-
-.division-aside .relation-line { font-size: .88rem; color: var(--muted); font-family: var(--font-ui); }
-
-.division.band-invert .division-aside .relation-line { color: var(--on-sand-dim); }
 
 .division-compliance {
   margin-top: 4px;
@@ -1807,6 +1808,25 @@ html:not([data-theme="light"]) .btn-primary:focus-visible::before { transform: t
 
 .opp-rows { border-top: 1px solid var(--sand-faint); }
 
+.opp-feature {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: clamp(24px, 4vw, 40px);
+  margin-top: clamp(28px, 4vw, 40px);
+}
+
+.opp-feature-text { flex: 1 1 320px; margin: 0; }
+
+.opp-feature-media {
+  flex: 0 1 560px;
+  width: 100%;
+  max-width: 560px;
+  aspect-ratio: 16 / 9;
+  border: 1px solid var(--frame-border);
+}
+
 .opp-row {
   display: flex;
   flex-wrap: wrap;
@@ -1893,8 +1913,9 @@ html:not([data-theme="light"]) .btn-primary:focus-visible::before { transform: t
 #group.wine-band {
   color: #2B2522;
   background-image:
-    radial-gradient(120% 60% at 14% -8%, color-mix(in srgb, var(--wine) 8%, transparent), transparent 58%),
-    linear-gradient(175deg, var(--cream) 0%, var(--sand) 62%, color-mix(in srgb, var(--sand) 80%, var(--muted) 20%) 100%);
+    radial-gradient(120% 60% at 14% -8%, color-mix(in srgb, var(--wine) 24%, transparent), transparent 62%),
+    radial-gradient(90% 70% at 88% 110%, color-mix(in srgb, var(--wine) 18%, transparent), transparent 60%),
+    linear-gradient(175deg, color-mix(in srgb, var(--wine) 7%, var(--cream)) 0%, color-mix(in srgb, var(--wine) 12%, var(--sand)) 55%, color-mix(in srgb, var(--sand) 78%, var(--muted)) 100%);
 }
 
 #group.wine-band .label,
