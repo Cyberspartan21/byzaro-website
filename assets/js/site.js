@@ -253,4 +253,37 @@
       }
     });
   }
+
+  /* Segments network diagram — hover/focus a sector: it lifts outward, its
+     two nearest markets light up, the rest of the diagram dims. Progressive
+     enhancement only — every sector is a real <a href> that works without
+     this script; this just adds the highlight choreography. */
+  document.querySelectorAll('.segments-diagram').forEach(function (svg) {
+    var group = svg.querySelector('.seg-group');
+    var hits = svg.querySelectorAll('.seg-hit');
+    var markets = svg.querySelectorAll('.seg-mk');
+    if (!group || !hits.length) return;
+
+    function activate(hit) {
+      group.classList.add('dim');
+      hit.classList.add('on');
+      var div = hit.getAttribute('data-div');
+      markets.forEach(function (mk) {
+        var near = (mk.getAttribute('data-near') || '').split(',');
+        if (near.indexOf(div) !== -1) mk.classList.add('lit');
+      });
+    }
+    function deactivate(hit) {
+      group.classList.remove('dim');
+      hit.classList.remove('on');
+      markets.forEach(function (mk) { mk.classList.remove('lit'); });
+    }
+
+    hits.forEach(function (hit) {
+      hit.addEventListener('mouseenter', function () { activate(hit); });
+      hit.addEventListener('mouseleave', function () { deactivate(hit); });
+      hit.addEventListener('focus', function () { activate(hit); });
+      hit.addEventListener('blur', function () { deactivate(hit); });
+    });
+  });
 })();

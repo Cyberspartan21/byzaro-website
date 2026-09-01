@@ -1050,31 +1050,98 @@ html:not([data-theme="light"]) .btn-primary:focus-visible::before { transform: t
 }
 
 /* ---------------------------------------------------------------------- */
-/* One Network — the Movement diagram                                       */
+/* One Network — the Segments diagram                                       */
+/* Five filled sectors (not hairlines) around a protected logo hub. Every   */
+/* sector is a real link to its division page; hovering/focusing one lifts  */
+/* it outward and lights the two nearest markets, everything else dims.    */
 /* ---------------------------------------------------------------------- */
 
 .movement-wrap { margin-top: clamp(48px, 7vw, 88px); display: flex; justify-content: center; }
 
-.movement-diagram { width: min(100%, 720px); height: auto; }
+.segments-diagram { width: min(100%, 640px); height: auto; overflow: visible; }
+.segments-diagram--expanded { width: min(100%, 680px); }
 
-.movement-diagram .mv-scale { stroke: var(--steel-dim); stroke-width: .6; opacity: .7; }
-.movement-diagram .mv-scale-long { stroke: var(--steel); stroke-width: 1; }
-.movement-diagram .mv-ring { fill: none; stroke: var(--border-strong); stroke-width: 1; }
-.movement-diagram .mv-ring--outer { stroke-dasharray: 3 5; stroke: var(--steel-dim); }
-.movement-diagram .mv-line { stroke: var(--steel-dim); stroke-width: 1; }
-.movement-diagram .mv-center { color: var(--text); }
-.movement-diagram .mv-jewel { fill: var(--steel); }
-.movement-diagram .mv-jewel-core { fill: var(--text); }
-.movement-diagram .mv-label {
-  font-family: var(--font-ui);
-  font-size: 9px;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-  fill: var(--text-dim);
+.seg-group { transform-origin: 300px 300px; }
+.segments-diagram--expanded .seg-group { transform-origin: 340px 390px; }
+
+.seg-hit {
+  cursor: pointer;
+  outline: none;
+  display: block;
+  transition: transform .32s cubic-bezier(.22,1,.36,1);
+  transform-origin: inherit;
 }
-.movement-diagram .mv-label--division { fill: var(--steel-text); font-weight: 500; }
-.movement-diagram .mv-label--ring { fill: var(--steel-text); font-size: 8.5px; letter-spacing: .18em; }
+.seg-hit.on { transform: scale(1.045); }
 
+.seg-fill {
+  fill: var(--wine);
+  transition: opacity .28s ease, fill .28s ease;
+}
+.seg-hit:nth-child(2n) .seg-fill { fill: var(--wine-deep); }
+.seg-group.dim .seg-fill { opacity: .38; }
+.seg-group.dim .seg-hit.on .seg-fill { opacity: 1; }
+
+.seg-label {
+  font-family: var(--font-ui);
+  font-size: 12.5px;
+  font-weight: 500;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  fill: var(--cream);
+  pointer-events: none;
+  transition: opacity .28s ease;
+}
+.seg-group.dim .seg-label { opacity: .5; }
+.seg-group.dim .seg-hit.on .seg-label { opacity: 1; }
+
+.seg-focus {
+  fill: none;
+  stroke: var(--cream);
+  stroke-width: 2.5;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .18s ease;
+}
+.seg-hit:focus-visible .seg-focus { opacity: .9; }
+
+.seg-sheen { opacity: .5; pointer-events: none; transform-origin: inherit; }
+
+.seg-outer-ring { fill: none; stroke: var(--border-strong); stroke-width: 1; opacity: .5; }
+.seg-tp-ring { fill: none; stroke: var(--border-strong); stroke-width: 1; stroke-dasharray: 2 6; }
+.seg-tp-label {
+  font-family: var(--font-ui);
+  font-size: 10px;
+  letter-spacing: .22em;
+  fill: var(--muted);
+  text-transform: uppercase;
+}
+
+.seg-mk-dot { fill: var(--muted); opacity: .55; transition: opacity .25s ease, r .25s ease, fill .25s ease; }
+.seg-mk-label {
+  font-family: var(--font-ui);
+  font-size: 10.5px;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  fill: var(--muted);
+  transition: fill .25s ease, opacity .25s ease;
+}
+/* --accent-text (not --wine): this sits on the page background, which
+   flips per theme — --wine alone is unreadable on the dark-theme ground. */
+.seg-mk.lit .seg-mk-dot { opacity: 1; r: 6; fill: var(--accent-text); }
+.seg-mk.lit .seg-mk-label { fill: var(--accent-text); }
+
+.seg-hub-outer { fill: none; stroke: var(--border-strong); stroke-width: 1; opacity: .4; }
+.seg-hub-disc { fill: var(--cream); }
+.seg-hub-ring { fill: none; stroke: var(--wine); stroke-width: 1.4; }
+.seg-hub-mark { color: var(--wine); }
+
+@media (prefers-reduced-motion: no-preference) {
+  .seg-sheen { animation: seg-spin 30s linear infinite; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .seg-hit, .seg-fill, .seg-label { transition: none; }
+}
+@keyframes seg-spin { to { transform: rotate(360deg); } }
 
 .movement-list-fallback-wrap { display: none; text-align: center; margin-top: 24px; width: 100%; }
 
@@ -1092,7 +1159,7 @@ html:not([data-theme="light"]) .btn-primary:focus-visible::before { transform: t
 }
 
 @media (max-width: 640px) {
-  .movement-diagram { display: none; }
+  .segments-diagram { display: none; }
   .movement-list-fallback-wrap { display: block; }
 }
 
