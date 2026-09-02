@@ -89,7 +89,7 @@
   --on-sand-strong: var(--cream);
   --on-sand-dim: rgba(240, 235, 225, .72);
 
-  --header-bg: rgba(240, 235, 225, .86);
+  --header-bg: rgba(92, 26, 40, .92);
   --subnav-bg: rgba(240, 235, 225, .94);
   --frame-border: rgba(43, 37, 34, .22);
   --input-bg: #EAE2D0;
@@ -476,6 +476,31 @@ html:not([data-theme="light"]) .btn-primary:focus-visible::before { transform: t
   border-bottom: 1px solid var(--sand-faint);
 }
 
+/* Light theme's header is now a wine surface (was cream) — the normal
+   light-theme text tokens (dark ink, wine-as-accent) were tuned for a
+   cream ground and would nearly disappear here. Re-declaring them locally
+   flips every existing header child (nav links, brand mark, language
+   switch, theme toggle, dropdown caret) to the same cream/sand palette the
+   dark theme's header already uses on its own wine ground — same pattern,
+   no per-element overrides needed. */
+[data-theme="light"] .site-header {
+  --muted: #B9A894;
+  --accent-text: #D9CBB4;
+  --sand-faint: rgba(217, 203, 180, .12);
+  color: var(--cream);
+}
+
+/* The Capabilities flyout keeps its own cream panel background regardless
+   (it uses --bg/--bg-2, not --header-bg) — restore the normal light-theme
+   text tokens inside it so its links don't inherit the header's on-wine
+   palette and vanish against their still-cream background. */
+[data-theme="light"] .site-header .dropdown-menu {
+  --muted: #5E5248;
+  --accent-text: var(--wine);
+  --sand-faint: rgba(43, 37, 34, .08);
+  color: #2B2522;
+}
+
 .nav {
   display: flex;
   align-items: center;
@@ -573,6 +598,11 @@ html:not([data-theme="light"]) .btn-primary:focus-visible::before { transform: t
 .theme-toggle:hover, .theme-toggle:focus-visible { color: var(--sand); }
 [data-theme="light"] .theme-toggle:hover,
 [data-theme="light"] .theme-toggle:focus-visible { color: var(--wine); opacity: .75; }
+/* ...except in the header itself, which is now a wine surface in light
+   theme too — wine-on-wine on hover would vanish, so it keeps the same
+   sand hover the dark theme's (already wine) header uses. */
+[data-theme="light"] .site-header .theme-toggle:hover,
+[data-theme="light"] .site-header .theme-toggle:focus-visible { color: var(--sand); opacity: 1; }
 
 .mobile-menu .theme-toggle { margin-top: 4px; font-size: 13px; justify-content: center; }
 
