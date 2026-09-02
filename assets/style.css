@@ -1889,6 +1889,18 @@ html:not([data-theme="light"]) .btn-primary:focus-visible::before { transform: t
 .mandate-confirmation.is-visible { display: block; }
 .mandate-confirmation.is-error { border-color: var(--accent-text); }
 
+/* Honeypot — present for bots, invisible and unreachable for people. */
+.hp-field {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.btn:disabled { opacity: .55; cursor: not-allowed; pointer-events: none; }
+
 /* ---------------------------------------------------------------------- */
 /* Opportunities rows (network.html)                                        */
 /* ---------------------------------------------------------------------- */

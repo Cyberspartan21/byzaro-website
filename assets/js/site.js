@@ -215,10 +215,14 @@
   var form = document.querySelector('.mandate-form');
   if (form) {
     var confirmation = form.querySelector('.mandate-confirmation');
+    var submitBtn = form.querySelector('button[type="submit"]');
     var mode = form.getAttribute('data-mode') || 'demo';
     var endpoint = form.getAttribute('data-endpoint') || '';
     var successMsg = form.getAttribute('data-success') || '';
     var errorMsg = form.getAttribute('data-error') || '';
+    var sendingLabel = form.getAttribute('data-sending') || '';
+    var notActiveMsg = form.getAttribute('data-not-active') || '';
+    var submitLabel = form.getAttribute('data-submit-label') || (submitBtn ? submitBtn.textContent : '');
 
     function showMessage(msg, isError) {
       confirmation.textContent = msg;
@@ -228,15 +232,44 @@
       confirmation.focus();
     }
 
+    function setBusy(isBusy) {
+      if (!submitBtn) { return; }
+      submitBtn.disabled = isBusy;
+      submitBtn.textContent = isBusy ? sendingLabel : submitLabel;
+    }
+
     form.addEventListener('submit', function (e) {
       e.preventDefault();
+
+      // Native constraint validation (required fields, email format) — the
+      // form intentionally keeps `novalidate` off so the browser's own
+      // accessible validation UI runs; this is a backstop for programmatic
+      // submits and browsers that still fire `submit` on invalid forms.
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+
+      // Honeypot: real visitors never fill this hidden field. If it has a
+      // value, treat the submission as spam without alerting the sender —
+      // Formspree's own `_gotcha` field does the same silently server-side.
+      var honeypot = form.querySelector('input[name="_gotcha"]');
+      if (honeypot && honeypot.value) {
+        form.reset();
+        return;
+      }
+
+      if (submitBtn && submitBtn.disabled) { return; }
+
       if (mode === 'endpoint' && endpoint) {
         var data = new FormData(form);
+        setBusy(true);
         fetch(endpoint, {
           method: 'POST',
           body: data,
           headers: { 'Accept': 'application/json' }
         }).then(function (response) {
+          setBusy(false);
           if (response.ok) {
             showMessage(successMsg, false);
             form.reset();
@@ -244,12 +277,14 @@
             showMessage(errorMsg, true);
           }
         }).catch(function () {
+          setBusy(false);
           showMessage(errorMsg, true);
         });
       } else {
-        // Demo mode: no network call, purely local confirmation.
-        showMessage(successMsg, false);
-        form.reset();
+        // No endpoint configured yet — nothing is transmitted, so the form
+        // must never claim success. Fields are left untouched so nothing
+        // the visitor typed is lost.
+        showMessage(notActiveMsg, false);
       }
     });
   }
