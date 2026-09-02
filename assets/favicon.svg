@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+  <rect width="1024" height="1024" fill="#5C1A28"/>
+  <g transform="translate(512,512) scale(2.0) translate(-183.5,-195)" fill="#F0EBE1">
+    <defs><path id="bzb-fav" fill-rule="evenodd" d="M0,0 H164 V56 C161,68 145,70 145,90 C145,110 161,112 164,124 V181 H0 Z M33,32 H131 V54 A20,20 0 0 1 111,74 H76 V107 H110 A21,21 0 0 1 131,128 V149 H33 Z"/></defs>
+    <use href="#bzb-fav" transform="translate(203,0)"/>
+    <use href="#bzb-fav" transform="translate(164,0) scale(-1,1)"/>
+    <use href="#bzb-fav" transform="translate(203,209)"/>
+    <use href="#bzb-fav" transform="translate(164,209) scale(-1,1)"/>
+  </g>
+</svg>

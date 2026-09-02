@@ -254,14 +254,17 @@
     });
   }
 
-  /* Segments network diagram — hover/focus a sector: it lifts outward, its
-     two nearest markets light up, the rest of the diagram dims. Progressive
-     enhancement only — every sector is a real <a href> that works without
-     this script; this just adds the highlight choreography. */
-  document.querySelectorAll('.segments-diagram').forEach(function (svg) {
-    var group = svg.querySelector('.seg-group');
-    var hits = svg.querySelectorAll('.seg-hit');
-    var markets = svg.querySelectorAll('.seg-mk');
+  /* Segments network diagram — hover/focus/tap a sector: it lifts outward,
+     its two nearest markets light up, the rest of the diagram dims.
+     Progressive enhancement only — every sector is a real <a href> that
+     works without this script; this just adds the highlight choreography.
+     Scoped to .diagram-unit (not just the <svg>) so the mobile variant's
+     market-name captions, which sit below the svg as a sibling <ul>, light
+     up together with the on-diagram dots. */
+  document.querySelectorAll('.diagram-unit').forEach(function (unit) {
+    var group = unit.querySelector('.seg-group');
+    var hits = unit.querySelectorAll('.seg-hit');
+    var markets = unit.querySelectorAll('.seg-mk, .seg-mk-caption');
     if (!group || !hits.length) return;
 
     function activate(hit) {
@@ -284,6 +287,11 @@
       hit.addEventListener('mouseleave', function () { deactivate(hit); });
       hit.addEventListener('focus', function () { activate(hit); });
       hit.addEventListener('blur', function () { deactivate(hit); });
+      /* Touch: light up on press so the highlight is visible the instant
+         before navigation fires, without gating the link behind a tap. */
+      hit.addEventListener('touchstart', function () { activate(hit); }, { passive: true });
+      hit.addEventListener('touchend', function () { deactivate(hit); }, { passive: true });
+      hit.addEventListener('touchcancel', function () { deactivate(hit); }, { passive: true });
     });
   });
 })();
