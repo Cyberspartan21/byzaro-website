@@ -80,8 +80,10 @@
   --wine: #5C1A28;
   --wine-dim: rgba(92, 26, 40, .18);
   --sand: #D9CBB4;
-  --sand-dim: rgba(43, 37, 34, .22);
-  --sand-faint: rgba(43, 37, 34, .08);
+  /* Hairlines / frames carry a faint wine tint instead of grey-brown, so
+     every divider, card edge and ring reads as Bordeaux, not beige. */
+  --sand-dim: rgba(92, 26, 40, .28);
+  --sand-faint: rgba(92, 26, 40, .16);
   --cream: #F0EBE1;
   --muted: #5E5248;
   /* darkened wine reads ≥4.5:1 on both cream surfaces — measured */
@@ -91,9 +93,9 @@
 
   --header-bg: rgba(92, 26, 40, .92);
   --subnav-bg: rgba(240, 235, 225, .94);
-  --frame-border: rgba(43, 37, 34, .22);
+  --frame-border: rgba(92, 26, 40, .26);
   --input-bg: #EAE2D0;
-  --input-border: rgba(43, 37, 34, .22);
+  --input-border: rgba(92, 26, 40, .30);
 
   /* Movement-Diagramm-Aliase, helle Variante */
   --steel: var(--wine);
@@ -497,7 +499,7 @@ html:not([data-theme="light"]) .btn-primary:focus-visible::before { transform: t
 [data-theme="light"] .site-header .dropdown-menu {
   --muted: #5E5248;
   --accent-text: var(--wine);
-  --sand-faint: rgba(43, 37, 34, .08);
+  --sand-faint: rgba(92, 26, 40, .16);
   color: #2B2522;
 }
 
@@ -2443,3 +2445,56 @@ html:not([data-theme="light"]) .btn-primary:focus-visible::before { transform: t
 .policy-section p { color: var(--muted); line-height: 1.7; }
 
 .policy-section p + p { margin-top: 12px; }
+
+/* ======================================================================
+   Light theme — Bordeaux accent pass (2026-09-02)
+   The cream variant read as "too beige". Everything below is scoped to
+   [data-theme="light"]; the dark theme is untouched. Together with the
+   wine header this frames every page in Bordeaux (header + footer) and
+   threads wine through the dividers, numerals, cards and panels in
+   between — accents, not a recolour.
+   ====================================================================== */
+
+/* Footer becomes a wine band, mirroring the header. Same token flip as the
+   header: the header/footer children keep their existing rules and simply
+   resolve to the cream/sand palette on the wine ground. */
+[data-theme="light"] .site-footer {
+  background-image: linear-gradient(180deg, var(--wine) 0%, var(--wine-deep) 100%);
+  --muted: #C4B39E;
+  --accent-text: var(--sand);
+  --sand-faint: rgba(217, 203, 180, .18);
+  color: var(--cream);
+}
+
+/* Panel sections: a whisper of wine in the ground plus wine hairlines at
+   the top and bottom edge, so the beige slabs stop reading as flat beige. */
+[data-theme="light"] .section--panel {
+  background-image:
+    linear-gradient(180deg, rgba(255,255,255,.05) 0%, rgba(0,0,0,.05) 100%),
+    linear-gradient(180deg,
+      color-mix(in srgb, var(--wine) 8%, var(--bg-2)) 0%,
+      var(--bg-2) 45%,
+      color-mix(in srgb, var(--wine) 5%, var(--bg-2)) 100%);
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, var(--wine) 24%, transparent),
+    inset 0 -1px 0 color-mix(in srgb, var(--wine) 24%, transparent);
+}
+
+/* Ghost section numerals: a touch more presence, in wine. */
+[data-theme="light"] .ghost-num { opacity: .075; }
+
+/* Capabilities ledger: index numbers and the "explore" cue in wine, the
+   division name turns wine on hover, hover ground gets a wine tint. */
+[data-theme="light"] .ledger-num { color: var(--wine); }
+[data-theme="light"] .ledger-explore { color: var(--wine); }
+[data-theme="light"] .ledger-name { transition: color 200ms ease; }
+[data-theme="light"] .ledger-row:hover .ledger-name,
+[data-theme="light"] .ledger-row:focus-visible .ledger-name { color: var(--wine); }
+[data-theme="light"] .ledger-row:hover,
+[data-theme="light"] .ledger-row:focus-visible { background: color-mix(in srgb, var(--wine) 6%, var(--bg-2)); }
+[data-theme="light"] .ledger-row:hover .ledger-num,
+[data-theme="light"] .ledger-row:focus-visible .ledger-num { color: var(--wine); }
+
+/* Cards and framed panels: wine-tinted ground behind the wine-tinted frame. */
+[data-theme="light"] .scenario-card { background: color-mix(in srgb, var(--wine) 5%, var(--bg-2)); }
+[data-theme="light"] .panel { background: color-mix(in srgb, var(--wine) 4%, var(--bg-2)); }
