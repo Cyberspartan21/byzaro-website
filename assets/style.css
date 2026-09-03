@@ -2510,3 +2510,77 @@ html:not([data-theme="light"]) .btn-primary:focus-visible::before { transform: t
 /* Cards and framed panels: wine-tinted ground behind the wine-tinted frame. */
 [data-theme="light"] .scenario-card { background: color-mix(in srgb, var(--wine) 5%, var(--bg-2)); }
 [data-theme="light"] .panel { background: color-mix(in srgb, var(--wine) 4%, var(--bg-2)); }
+
+/* ======================================================================
+   Utilities & 404 (2026-09-02)
+   ====================================================================== */
+
+/* Visually hidden, still read by assistive tech (hero headline keeps a
+   static copy of the current claim here while the visible copy types). */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Footer social links (rendered only when company.json lists any). */
+.footer-social {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 22px;
+  align-self: flex-end;
+  font-family: var(--font-ui);
+  font-size: 12px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+.footer-social a { text-decoration: none; color: var(--accent-text); border-bottom: 1px solid color-mix(in srgb, var(--accent-text) 40%, transparent); }
+.footer-social a:hover, .footer-social a:focus-visible { border-bottom-color: var(--accent-text); }
+
+/* 404 — on-brand, standalone (no header/nav: it has no language context). */
+.notfound {
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  background: var(--bg);
+  color: var(--text);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.notfound::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(60% 50% at 50% 40%, color-mix(in srgb, var(--wine) 9%, transparent), transparent 70%);
+  pointer-events: none;
+}
+.notfound-inner {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  max-width: 560px;
+}
+.notfound-mark { width: 56px; height: auto; color: var(--wine); }
+.notfound-code {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(5rem, 16vw, 9rem);
+  line-height: 1;
+  color: var(--wine);
+  opacity: .14;
+  margin: -6px 0 4px;
+}
+.notfound-lines { display: flex; flex-direction: column; gap: 10px; }
+.notfound-line { font-family: var(--font-display); font-size: clamp(1.05rem, 2vw, 1.3rem); color: var(--text); }
+.notfound-line .text-link { margin-left: 6px; font-family: var(--font-ui); font-size: .8em; letter-spacing: .1em; text-transform: uppercase; }

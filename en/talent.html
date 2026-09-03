@@ -35,8 +35,11 @@
 <link rel="manifest" href="../assets/site.webmanifest">
 <meta name="theme-color" content="#5C1A28">
 
+<link rel="preload" href="../assets/fonts/fdd6c391-nuFiD-vYSZviVYUb_rj3ij__anPXDTzYgEM86xQ.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/80724b1f-92zatBhPNqw73oTd4jQmfxI.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="../assets/fonts/fonts.css">
 <link rel="stylesheet" href="../assets/style.css">
+
 </head>
 <body>
 
@@ -134,7 +137,7 @@
 
 <main id="main-content">
   <section class="division-hero">
-    <img src="../assets/img/talent.jpg" width="1600" height="900" loading="eager" alt="Spiral staircase seen from above">
+    <picture><source type="image/webp" srcset="../assets/img/talent-800.webp 800w, ../assets/img/talent-1200.webp 1200w, ../assets/img/talent-1600.webp 1600w" sizes="100vw"><img src="../assets/img/talent.jpg" width="1600" height="900" loading="eager" alt="Spiral staircase seen from above"></picture>
     <div class="container division-hero-inner">
       <div class="division-eyebrow">
         <span class="section-numeral">01</span>
@@ -269,14 +272,14 @@
       <p class="lede center reveal" style="margin-top:14px;">Talent solutions rarely stand alone — placements often connect to Advisory structuring or Digital systems as a company scales across borders.</p>
       <div class="related-divisions reveal">
         <a class="related-card" href="advisory.html">
-          <span class="related-thumb img-tint"><img src="../assets/img/advisory.jpg" width="1600" height="900" loading="lazy" alt="Conference table in a quiet meeting room"></span>
+          <span class="related-thumb img-tint"><picture><source type="image/webp" srcset="../assets/img/advisory-800.webp 800w, ../assets/img/advisory-1200.webp 1200w, ../assets/img/advisory-1600.webp 1600w" sizes="(min-width: 860px) 45vw, 100vw"><img src="../assets/img/advisory.jpg" width="1600" height="900" loading="lazy" alt="Conference table in a quiet meeting room"></picture></span>
           <span class="related-card-body">
             <span class="related-card-name">Advisory</span>
             <span class="related-card-line">Structure, expansion and execution across jurisdictions.</span>
           </span>
         </a>
         <a class="related-card" href="digital.html">
-          <span class="related-thumb img-tint"><img src="../assets/img/digital.jpg" width="1600" height="900" loading="lazy" alt="Warmly lit glass façade of an office building"></span>
+          <span class="related-thumb img-tint"><picture><source type="image/webp" srcset="../assets/img/digital-800.webp 800w, ../assets/img/digital-1200.webp 1200w, ../assets/img/digital-1600.webp 1600w" sizes="(min-width: 860px) 45vw, 100vw"><img src="../assets/img/digital.jpg" width="1600" height="900" loading="lazy" alt="Warmly lit glass façade of an office building"></picture></span>
           <span class="related-card-body">
             <span class="related-card-name">Digital</span>
             <span class="related-card-line">Building the technology and digital systems behind modern businesses.</span>
@@ -335,6 +338,7 @@
         <a href="imprint.html">Imprint</a>
         <a href="privacy.html">Privacy</a>
       </nav>
+      
     </div>
     <div class="footer-bottom">
       <div class="footer-legal-row">

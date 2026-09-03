@@ -35,8 +35,11 @@
 <link rel="manifest" href="../assets/site.webmanifest">
 <meta name="theme-color" content="#5C1A28">
 
+<link rel="preload" href="../assets/fonts/fdd6c391-nuFiD-vYSZviVYUb_rj3ij__anPXDTzYgEM86xQ.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/80724b1f-92zatBhPNqw73oTd4jQmfxI.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="../assets/fonts/fonts.css">
 <link rel="stylesheet" href="../assets/style.css">
+
 </head>
 <body>
 
@@ -134,10 +137,10 @@
 
 <main id="main-content">
   <section class="hero">
-    <img class="hero-bg-photo" id="hero-bg-photo" src="../assets/img/hero-1.jpg" width="1600" height="900" loading="eager" fetchpriority="high" alt="" aria-hidden="true">
+    <picture><source type="image/webp" srcset="../assets/img/hero-1-800.webp 800w, ../assets/img/hero-1-1200.webp 1200w, ../assets/img/hero-1-1600.webp 1600w" sizes="100vw"><img class="hero-bg-photo" id="hero-bg-photo" src="../assets/img/hero-1.jpg" width="1600" height="900" loading="eager" fetchpriority="high" alt="" aria-hidden="true"></picture>
     <div class="hero-inner">
       <p class="hero-label">BYZARO GROUP — INTERNATIONAL BUSINESS &amp; OPPORTUNITY GROUP</p>
-      <h1 class="hero-headline" id="hero-headline" data-claim="0">IHRE AMBITION BESTIMMT DAS ZIEL. UNSER NETZWERK DEN WEG.</h1>
+      <h1 class="hero-headline" id="hero-headline" data-claim="0"><span class="sr-only" id="hero-headline-sr">IHRE AMBITION BESTIMMT DAS ZIEL. UNSER NETZWERK DEN WEG.</span><span class="hero-typed" id="hero-typed" aria-hidden="true">IHRE AMBITION BESTIMMT DAS ZIEL. UNSER NETZWERK DEN WEG.</span></h1>
       <p class="hero-support">Internationale Expertise, Beziehungen und Umsetzung – über Wirtschaft, Talent, Technologie, Immobilien und private Kapitalmärkte hinweg.</p>
       <div class="hero-actions">
         <a class="btn btn-primary" href="contact.html">Opportunity besprechen</a>
@@ -156,7 +159,9 @@
     ];
     var img = document.getElementById('hero-bg-photo');
     var h1 = document.getElementById('hero-headline');
-    if (!img || !h1) { return; }
+    var typed = document.getElementById('hero-typed');
+    var sr = document.getElementById('hero-headline-sr');
+    if (!img || !h1 || !typed || !sr) { return; }
 
     var pool = [0, 1, 2, 3];
     var idx;
@@ -176,6 +181,13 @@
     /* Background photo stays fixed for the whole visit (only the text
        types) — still a fresh pick per page load via the anti-repeat logic
        above, just not tied to which claim the typewriter is currently on. */
+    var heroSource = img.parentElement && img.parentElement.tagName === 'PICTURE'
+      ? img.parentElement.querySelector('source') : null;
+    if (heroSource) {
+      heroSource.setAttribute('srcset', [800, 1200, 1600].map(function (w) {
+        return '../assets/img/hero-' + (idx + 1) + '-' + w + '.webp ' + w + 'w';
+      }).join(', '));
+    }
     img.src = '../assets/img/hero-' + (idx + 1) + '.jpg';
 
     var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -216,7 +228,8 @@
       // No continuous motion for visitors who asked for less of it — show
       // one claim, fully typed, and leave it there.
       h1.setAttribute('data-claim', String(idx));
-      h1.innerHTML = revealHTML(CLAIMS[idx], CLAIMS[idx].text.length, '');
+      sr.textContent = CLAIMS[idx].text;
+      typed.innerHTML = revealHTML(CLAIMS[idx], CLAIMS[idx].text.length, '');
       return;
     }
 
@@ -237,7 +250,7 @@
     function reserveHeight() {
       var maxHeight = 0;
       for (var i = 0; i < CLAIMS.length; i++) {
-        h1.innerHTML = revealHTML(CLAIMS[i], CLAIMS[i].text.length, '');
+        typed.innerHTML = revealHTML(CLAIMS[i], CLAIMS[i].text.length, '');
         if (h1.scrollHeight > maxHeight) { maxHeight = h1.scrollHeight; }
       }
       h1.style.minHeight = maxHeight + 'px';
@@ -252,12 +265,15 @@
     function typeClaim() {
       var claim = CLAIMS[order[step % order.length]];
       h1.setAttribute('data-claim', String(order[step % order.length]));
+      /* Assistive tech reads the full claim once, from the static copy —
+         never the character-by-character animation. */
+      sr.textContent = claim.text;
       var len = claim.text.length;
       var pos = 0;
 
       function tick() {
         pos++;
-        h1.innerHTML = revealHTML(claim, pos, CARET);
+        typed.innerHTML = revealHTML(claim, pos, CARET);
         if (pos < len) {
           setTimeout(tick, TYPE_MS);
         } else {
@@ -271,7 +287,7 @@
         h1.style.opacity = '0';
         setTimeout(function () {
           h1.style.transition = 'none';
-          h1.innerHTML = '';
+          typed.innerHTML = '';
           h1.style.opacity = '1';
           void h1.offsetWidth; /* flush, so the reset above never animates */
           h1.style.transition = '';
@@ -283,7 +299,7 @@
       setTimeout(tick, TYPE_MS);
     }
 
-    h1.innerHTML = CARET;
+    typed.innerHTML = CARET;
     typeClaim();
   })();
   </script>
@@ -535,7 +551,7 @@
           <p class="reach-ambition reveal">Ein wachsendes internationales Netzwerk aus Spezialistinnen und Spezialisten, erfahrenen Akteuren und vertrauenswürdigen Partnern.</p>
         </div>
         <div class="reach-media img-tint reveal">
-          <img src="../assets/img/reach.jpg" width="1600" height="900" loading="lazy" alt="Zwei Personen an einem hellen Tisch mit Globus">
+          <picture><source type="image/webp" srcset="../assets/img/reach-800.webp 800w, ../assets/img/reach-1200.webp 1200w, ../assets/img/reach-1600.webp 1600w" sizes="(min-width: 860px) 45vw, 100vw"><img src="../assets/img/reach.jpg" width="1600" height="900" loading="lazy" alt="Zwei Personen an einem hellen Tisch mit Globus"></picture>
         </div>
       </div>
     </div>
@@ -615,6 +631,7 @@
         <a href="imprint.html">Impressum</a>
         <a href="privacy.html">Datenschutz</a>
       </nav>
+      
     </div>
     <div class="footer-bottom">
       <div class="footer-legal-row">

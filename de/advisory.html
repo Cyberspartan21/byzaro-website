@@ -35,8 +35,11 @@
 <link rel="manifest" href="../assets/site.webmanifest">
 <meta name="theme-color" content="#5C1A28">
 
+<link rel="preload" href="../assets/fonts/fdd6c391-nuFiD-vYSZviVYUb_rj3ij__anPXDTzYgEM86xQ.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/80724b1f-92zatBhPNqw73oTd4jQmfxI.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="../assets/fonts/fonts.css">
 <link rel="stylesheet" href="../assets/style.css">
+
 </head>
 <body>
 
@@ -134,7 +137,7 @@
 
 <main id="main-content">
   <section class="division-hero">
-    <img src="../assets/img/advisory.jpg" width="1600" height="900" loading="eager" alt="Konferenztisch in einem ruhigen Besprechungsraum">
+    <picture><source type="image/webp" srcset="../assets/img/advisory-800.webp 800w, ../assets/img/advisory-1200.webp 1200w, ../assets/img/advisory-1600.webp 1600w" sizes="100vw"><img src="../assets/img/advisory.jpg" width="1600" height="900" loading="eager" alt="Konferenztisch in einem ruhigen Besprechungsraum"></picture>
     <div class="container division-hero-inner">
       <div class="division-eyebrow">
         <span class="section-numeral">05</span>
@@ -272,14 +275,14 @@
       </div>
       <div class="related-divisions reveal">
         <a class="related-card" href="capital.html">
-          <span class="related-thumb img-tint"><img src="../assets/img/capital.jpg" width="1600" height="900" loading="lazy" alt="Säulenhalle mit hohen Fenstern"></span>
+          <span class="related-thumb img-tint"><picture><source type="image/webp" srcset="../assets/img/capital-800.webp 800w, ../assets/img/capital-1200.webp 1200w, ../assets/img/capital-1600.webp 1600w" sizes="(min-width: 860px) 45vw, 100vw"><img src="../assets/img/capital.jpg" width="1600" height="900" loading="lazy" alt="Säulenhalle mit hohen Fenstern"></picture></span>
           <span class="related-card-body">
             <span class="related-card-name">Capital</span>
             <span class="related-card-line">Verbindet qualifizierte Kundinnen und Kunden mit ausgewählten Private-Market-Opportunities.</span>
           </span>
         </a>
         <a class="related-card" href="talent.html">
-          <span class="related-thumb img-tint"><img src="../assets/img/talent.jpg" width="1600" height="900" loading="lazy" alt="Spiralförmiges Treppenhaus von oben"></span>
+          <span class="related-thumb img-tint"><picture><source type="image/webp" srcset="../assets/img/talent-800.webp 800w, ../assets/img/talent-1200.webp 1200w, ../assets/img/talent-1600.webp 1600w" sizes="(min-width: 860px) 45vw, 100vw"><img src="../assets/img/talent.jpg" width="1600" height="900" loading="lazy" alt="Spiralförmiges Treppenhaus von oben"></picture></span>
           <span class="related-card-body">
             <span class="related-card-name">Talent</span>
             <span class="related-card-line">Verbindet Unternehmen mit den Menschen, die sie brauchen – über Grenzen hinweg.</span>
@@ -338,6 +341,7 @@
         <a href="imprint.html">Impressum</a>
         <a href="privacy.html">Datenschutz</a>
       </nav>
+      
     </div>
     <div class="footer-bottom">
       <div class="footer-legal-row">
