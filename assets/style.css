@@ -825,6 +825,14 @@ html:not([data-theme="light"]) .btn-primary:focus-visible::before { transform: t
   color: var(--cream);
   text-shadow: 0 4px 28px color-mix(in srgb, var(--near-black) 80%, transparent);
   text-wrap: balance;
+  /* Slow fade-out between typewriter claims (see index.html's inline
+     script) — JS toggles opacity and briefly sets transition:none only to
+     reset between claims without that reset itself animating. */
+  transition: opacity 1.4s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-headline { transition: none; }
 }
 
 [data-theme="light"] .hero-headline {

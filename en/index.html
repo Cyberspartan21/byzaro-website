@@ -221,10 +221,10 @@
     }
 
     var CARET = '<span class="hero-caret" aria-hidden="true"></span>';
-    var TYPE_MS = 55;
-    var DELETE_MS = 24;
-    var HOLD_MS = 3400;
-    var GAP_MS = 500;
+    var TYPE_MS = 130;
+    var HOLD_MS = 5000;
+    var FADE_MS = 1400;
+    var GAP_MS = 900;
     var order = [idx, (idx + 1) % 4, (idx + 2) % 4, (idx + 3) % 4];
     var step = 0;
 
@@ -240,19 +240,23 @@
         if (pos < len) {
           setTimeout(tick, TYPE_MS);
         } else {
-          setTimeout(deleteClaim, HOLD_MS);
+          setTimeout(fadeOut, HOLD_MS);
         }
       }
 
-      function deleteClaim() {
-        pos--;
-        h1.innerHTML = revealHTML(claim, pos, pos > 0 ? CARET : '');
-        if (pos > 0) {
-          setTimeout(deleteClaim, DELETE_MS);
-        } else {
+      // Slow, gentle fade — not a reverse-typed erase — then the next
+      // claim starts typing from an empty, fully reset headline.
+      function fadeOut() {
+        h1.style.opacity = '0';
+        setTimeout(function () {
+          h1.style.transition = 'none';
+          h1.innerHTML = '';
+          h1.style.opacity = '1';
+          void h1.offsetWidth; /* flush, so the reset above never animates */
+          h1.style.transition = '';
           step++;
           setTimeout(typeClaim, GAP_MS);
-        }
+        }, FADE_MS);
       }
 
       setTimeout(tick, TYPE_MS);
