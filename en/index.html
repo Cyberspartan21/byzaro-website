@@ -228,6 +228,27 @@
     var order = [idx, (idx + 1) % 4, (idx + 2) % 4, (idx + 3) % 4];
     var step = 0;
 
+    /* Reserve room for the tallest of the 4 claims so the box never grows
+       or shrinks as shorter/longer claims cycle through — everything below
+       (support text, CTAs) stays put. Measured directly on the real h1
+       (same width/font context as the live element), synchronously before
+       the first paint, so nothing flashes. Re-measured on resize since the
+       line-wrap point — and so the tallest claim — can change with width. */
+    function reserveHeight() {
+      var maxHeight = 0;
+      for (var i = 0; i < CLAIMS.length; i++) {
+        h1.innerHTML = revealHTML(CLAIMS[i], CLAIMS[i].text.length, '');
+        if (h1.scrollHeight > maxHeight) { maxHeight = h1.scrollHeight; }
+      }
+      h1.style.minHeight = maxHeight + 'px';
+    }
+    reserveHeight();
+    var resizeTimer;
+    window.addEventListener('resize', function () {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(reserveHeight, 200);
+    });
+
     function typeClaim() {
       var claim = CLAIMS[order[step % order.length]];
       h1.setAttribute('data-claim', String(order[step % order.length]));

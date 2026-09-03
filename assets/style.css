@@ -819,12 +819,23 @@ html:not([data-theme="light"]) .btn-primary:focus-visible::before { transform: t
 }
 
 .hero-headline {
-  font-size: clamp(2.5rem, 6.6vw, 5.8rem);
+  /* Fixed box, fixed type size, left-aligned, no text-wrap:balance — all
+     four claims share the exact same width/height/font-size so the block
+     never grows, shrinks or recenters as the typewriter (index.html's
+     inline script) types. Only content changes; the box doesn't. Text
+     starts at the box's left edge and is only ever appended to, so normal
+     wrapping (not balance, which reflows earlier lines as content grows)
+     never shifts characters that already typed in. */
+  font-size: clamp(1.9rem, 4.7vw, 4rem);
   line-height: 1.22;
-  max-width: min(21ch, 100%);
+  width: min(27ch, 100%);
+  text-align: left;
   color: var(--cream);
   text-shadow: 0 4px 28px color-mix(in srgb, var(--near-black) 80%, transparent);
-  text-wrap: balance;
+  /* Reserved by JS (index.html) to the tallest of the 4 claims at this
+     viewport, so the line count differing between claims doesn't move the
+     support text/CTAs below. */
+  min-height: 0;
   /* Slow fade-out between typewriter claims (see index.html's inline
      script) — JS toggles opacity and briefly sets transition:none only to
      reset between claims without that reset itself animating. */
@@ -854,24 +865,6 @@ html:not([data-theme="light"]) .btn-primary:focus-visible::before { transform: t
 .hero-headline span { display: block; }
 .hero-headline em { font-style: italic; font-weight: 500; }
 
-/* Rotating hero claims: two size tiers relative to the default (data-claim
-   "1") — the longer claims (0, 2) run a notch smaller, the shortest (3) a
-   notch larger, so every claim fits without overflow or clipping. The
-   min(...ch, 100%) cap keeps the ch-based line-break budget from ever
-   requesting more width than the hero actually has (narrow viewports +
-   large display type otherwise overflow the flex item). */
-.hero-headline[data-claim="0"],
-.hero-headline[data-claim="1"],
-.hero-headline[data-claim="2"] {
-  font-size: clamp(1.9rem, 4.7vw, 4rem);
-  line-height: 1.18;
-  max-width: min(27ch, 100%);
-}
-
-.hero-headline[data-claim="3"] {
-  font-size: clamp(2.4rem, 5.8vw, 5rem);
-  max-width: min(17ch, 100%);
-}
 
 /* Typewriter caret for the rotating hero claim. .hero-headline span is
    display:block (the highlighted word gets its own line) — this overrides
