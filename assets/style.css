@@ -865,17 +865,28 @@ html:not([data-theme="light"]) .btn-primary:focus-visible::before { transform: t
   max-width: min(17ch, 100%);
 }
 
-/* Reveal fade for the rotating hero claim — the pre-state class is only
-   ever applied by JS, so without JS the headline is simply visible. */
-.hero-headline.hero-headline--pre {
-  opacity: 0;
-  transform: translateY(10px);
+/* Typewriter caret for the rotating hero claim. .hero-headline span is
+   display:block (the highlighted word gets its own line) — this overrides
+   back to inline-block so the caret sits right after the last typed
+   character instead of dropping to a line of its own. */
+.hero-headline .hero-caret {
+  display: inline-block;
+  width: .05em;
+  min-width: 2px;
+  height: .82em;
+  margin-left: .05em;
+  background: currentColor;
+  vertical-align: -.08em;
+  animation: hero-caret-blink 1s step-end infinite;
 }
 
-.hero-headline.hero-headline--in {
-  opacity: 1;
-  transform: translateY(0);
-  transition: opacity .6s ease-out .12s, transform .6s ease-out .12s;
+@keyframes hero-caret-blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-headline .hero-caret { animation: none; opacity: 1; }
 }
 
 .hero-support {

@@ -173,36 +173,93 @@
       idx = pool[Math.floor(Math.random() * pool.length)];
     }
 
-    var claim = CLAIMS[idx] || CLAIMS[0];
+    /* Background photo stays fixed for the whole visit (only the text
+       types) — still a fresh pick per page load via the anti-repeat logic
+       above, just not tied to which claim the typewriter is currently on. */
     img.src = '../assets/img/hero-' + (idx + 1) + '.jpg';
 
-    var text = claim.text;
-    var metal = claim.metal;
-    var mIdx = metal ? text.indexOf(metal) : -1;
-    var html;
-    if (mIdx === -1) {
-      html = text;
-    } else {
-      var before = text.slice(0, mIdx);
-      var after = text.slice(mIdx + metal.length);
-      /* Satzzeichen direkt nach dem Metal-Wort wandern MIT in den Span —
-         sonst bricht text-wrap:balance den Punkt in eine eigene Zeile um. */
-      var punct = (after.match(/^[.,!?…]+/) || [''])[0];
-      after = after.slice(punct.length);
-      html = before + '<span class="metal-text">' + metal + punct + '</span>' + after;
-    }
-    h1.setAttribute('data-claim', String(idx));
-    h1.innerHTML = html;
-
     var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (!reduceMotion) {
-      h1.classList.add('hero-headline--pre');
-      requestAnimationFrame(function () {
-        requestAnimationFrame(function () {
-          h1.classList.add('hero-headline--in');
-        });
-      });
+
+    function escapeHtml(s) {
+      return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }
+
+    /* Rebuilds the claim's markup for a given number of revealed
+       characters, keeping the caret glued to the same line as the last
+       typed character — including while it's still inside the block-level
+       .metal-text word (see .hero-headline span { display:block }), where
+       the caret has to sit INSIDE that span rather than after it, or it
+       would jump to a line of its own. */
+    function revealHTML(claim, count, caretHTML) {
+      var text = claim.text;
+      var metal = claim.metal;
+      var mIdx = metal ? text.indexOf(metal) : -1;
+      if (mIdx === -1) {
+        return escapeHtml(text.slice(0, count)) + caretHTML;
+      }
+      var after = text.slice(mIdx + metal.length);
+      var punct = (after.match(/^[.,!?…]+/) || [''])[0];
+      var metalEnd = mIdx + metal.length + punct.length;
+
+      if (count <= mIdx) {
+        return escapeHtml(text.slice(0, count)) + caretHTML;
+      }
+      var before = escapeHtml(text.slice(0, mIdx));
+      if (count <= metalEnd) {
+        return before + '<span class="metal-text">' + escapeHtml(text.slice(mIdx, count)) + caretHTML + '</span>';
+      }
+      var metalHTML = '<span class="metal-text">' + escapeHtml(text.slice(mIdx, metalEnd)) + '</span>';
+      return before + metalHTML + escapeHtml(text.slice(metalEnd, count)) + caretHTML;
+    }
+
+    if (reduceMotion) {
+      // No continuous motion for visitors who asked for less of it — show
+      // one claim, fully typed, and leave it there.
+      h1.setAttribute('data-claim', String(idx));
+      h1.innerHTML = revealHTML(CLAIMS[idx], CLAIMS[idx].text.length, '');
+      return;
+    }
+
+    var CARET = '<span class="hero-caret" aria-hidden="true"></span>';
+    var TYPE_MS = 55;
+    var DELETE_MS = 24;
+    var HOLD_MS = 3400;
+    var GAP_MS = 500;
+    var order = [idx, (idx + 1) % 4, (idx + 2) % 4, (idx + 3) % 4];
+    var step = 0;
+
+    function typeClaim() {
+      var claim = CLAIMS[order[step % order.length]];
+      h1.setAttribute('data-claim', String(order[step % order.length]));
+      var len = claim.text.length;
+      var pos = 0;
+
+      function tick() {
+        pos++;
+        h1.innerHTML = revealHTML(claim, pos, CARET);
+        if (pos < len) {
+          setTimeout(tick, TYPE_MS);
+        } else {
+          setTimeout(deleteClaim, HOLD_MS);
+        }
+      }
+
+      function deleteClaim() {
+        pos--;
+        h1.innerHTML = revealHTML(claim, pos, pos > 0 ? CARET : '');
+        if (pos > 0) {
+          setTimeout(deleteClaim, DELETE_MS);
+        } else {
+          step++;
+          setTimeout(typeClaim, GAP_MS);
+        }
+      }
+
+      setTimeout(tick, TYPE_MS);
+    }
+
+    h1.innerHTML = CARET;
+    typeClaim();
   })();
   </script>
 
