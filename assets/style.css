@@ -819,17 +819,18 @@ html:not([data-theme="light"]) .btn-primary:focus-visible::before { transform: t
 }
 
 .hero-headline {
-  /* Fixed box, fixed type size, left-aligned, no text-wrap:balance — all
-     four claims share the exact same width/height/font-size so the block
-     never grows, shrinks or recenters as the typewriter (index.html's
-     inline script) types. Only content changes; the box doesn't. Text
-     starts at the box's left edge and is only ever appended to, so normal
-     wrapping (not balance, which reflows earlier lines as content grows)
-     never shifts characters that already typed in. */
+  /* Fixed box, fixed type size, no text-wrap:balance — all four claims
+     share the exact same width/height/font-size so the block itself never
+     grows, shrinks or moves as the typewriter (index.html's inline
+     script) types; only the text inside it changes. Centered to match the
+     brand's centered headline treatment — text-wrap:balance stays off
+     regardless, since it recalculates every line break on each keystroke
+     (the actual cause of the old "sentence keeps sliding" complaint), not
+     centering itself. */
   font-size: clamp(1.9rem, 4.7vw, 4rem);
   line-height: 1.22;
   width: min(27ch, 100%);
-  text-align: left;
+  text-align: center;
   color: var(--cream);
   text-shadow: 0 4px 28px color-mix(in srgb, var(--near-black) 80%, transparent);
   /* Reserved by JS (index.html) to the tallest of the 4 claims at this
